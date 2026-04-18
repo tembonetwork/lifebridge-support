@@ -17,6 +17,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Bricolage+Grotesque:wght@300;400;500;600;700&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Bricolage+Grotesque:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -98,10 +99,10 @@
 
     <nav class="fixed w-full z-50 glass-nav border-b border-white/10 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
+            <div class="flex justify-between h-16 items-center">
                 <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
-                    <img src="logo.png" alt="LifeBridge Support Logo" class="h-14 w-14 rounded-full object-cover shadow-sm border-2 border-brand-500/20">
-                    <span class="font-bold text-2xl font-serif tracking-tight text-brand-950 hidden sm:block">LifeBridge Support</span>
+                    <img src="logo.png" alt="LifeBridge Support Logo" class="h-10 w-10 rounded-full object-cover shadow-sm border-2 border-brand-500/20" loading="eager">
+                    <span class="font-bold text-xl font-serif tracking-tight text-brand-950 hidden sm:block">LifeBridge Support</span>
                 </div>
 
                 <div class="hidden md:flex space-x-8 items-center">
@@ -141,10 +142,10 @@
                 <span class="flex h-2 w-2 rounded-full bg-amber-400 animate-ping"></span>
                 Certified Language Solutions Globally
             </div>
-            <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold font-serif tracking-tight mb-8 leading-[1.1] reveal reveal-delay-1">
+            <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold font-serif tracking-tight mb-8 leading-[1.1] reveal reveal-delay-1">
                 Bridging the Language Gap <br class="hidden lg:block"> with <span class="bg-gradient-to-r from-brand-200 to-amber-200 bg-clip-text text-transparent italic font-medium">Precision.</span>
             </h1>
-            <p class="text-xl md:text-2xl text-brand-100/90 max-w-3xl mx-auto mb-12 leading-relaxed font-light reveal reveal-delay-2">
+            <p class="text-lg md:text-xl text-brand-100/90 max-w-2xl mx-auto mb-12 leading-relaxed font-light reveal reveal-delay-2">
                 Expert interpretation and certified document translation services tailored for legal, medical, and corporate environments.
             </p>
             <div class="flex flex-col sm:flex-row gap-6 justify-center reveal reveal-delay-3">
@@ -159,24 +160,24 @@
         </div>
     </section>
 
-    <section id="services" class="py-32 bg-slate-50 relative">
+    <section id="services" class="py-20 bg-slate-50 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center max-w-3xl mx-auto mb-20 reveal">
-                <h2 class="text-brand-600 font-bold tracking-[0.2em] uppercase text-sm mb-4">Our Core Expertise</h2>
-                <h3 class="text-4xl md:text-5xl font-bold font-serif text-slate-900 mb-6">Double Impact Language Support</h3>
-                <p class="text-slate-600 text-lg">We provide professional-grade services across two primary pillars, ensuring your message is never lost, whether spoken or written.</p>
+            <div class="text-center max-w-2xl mx-auto mb-16 reveal">
+                <h2 class="text-brand-600 font-bold tracking-[0.2em] uppercase text-xs mb-4">Our Core Expertise</h2>
+                <h3 class="text-3xl md:text-4xl font-bold font-serif text-slate-900 mb-6">Double Impact Language Support</h3>
+                <p class="text-slate-600 text-base md:text-lg text-lg">We provide professional-grade services across two primary pillars, ensuring your message is never lost, whether spoken or written.</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <!-- Interpretation Card -->
                 <div class="group bg-white p-10 rounded-[2.5rem] border border-slate-200 hover:border-brand-300 shadow-sm hover:shadow-2xl transition-all duration-500 reveal">
-                    <div class="w-20 h-20 bg-brand-50 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-brand-600 transition-colors duration-500">
-                        <svg class="w-10 h-10 text-brand-600 group-hover:text-white transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-16 h-16 bg-brand-50 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-brand-600 transition-colors duration-500">
+                        <svg class="w-8 h-8 text-brand-600 group-hover:text-white transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
                         </svg>
                     </div>
-                    <h4 class="text-3xl font-bold font-serif text-slate-900 mb-4">Expert Interpretation</h4>
-                    <p class="text-slate-600 text-lg mb-8 leading-relaxed">Seamless real-time communication for critical settings. Our interpreters are trained for nuance and technical accuracy.</p>
+                    <h4 class="text-2xl font-bold font-serif text-slate-900 mb-4">Expert Interpretation</h4>
+                    <p class="text-slate-600 text-base mb-8 leading-relaxed">Seamless real-time communication for critical settings. Our interpreters are trained for nuance and technical accuracy.</p>
                     <ul class="space-y-4 mb-10">
                         <li class="flex items-center gap-3 text-slate-700 font-medium">
                             <span class="w-6 h-6 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs">✓</span>
@@ -198,13 +199,13 @@
 
                 <!-- Translation Card -->
                 <div class="group bg-white p-10 rounded-[2.5rem] border border-slate-200 hover:border-brand-300 shadow-sm hover:shadow-2xl transition-all duration-500 reveal reveal-delay-1">
-                    <div class="w-20 h-20 bg-amber-50 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-amber-600 transition-colors duration-500">
-                        <svg class="w-10 h-10 text-amber-600 group-hover:text-white transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-amber-600 transition-colors duration-500">
+                        <svg class="w-8 h-8 text-amber-600 group-hover:text-white transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
                     </div>
-                    <h4 class="text-3xl font-bold font-serif text-slate-900 mb-4">Certified Translation</h4>
-                    <p class="text-slate-600 text-lg mb-8 leading-relaxed">Precise written translation for official documents. Every document is handled with strict confidentiality and quality control.</p>
+                    <h4 class="text-2xl font-bold font-serif text-slate-900 mb-4">Certified Translation</h4>
+                    <p class="text-slate-600 text-base mb-8 leading-relaxed">Precise written translation for official documents. Every document is handled with strict confidentiality and quality control.</p>
                     <ul class="space-y-4 mb-10">
                         <li class="flex items-center gap-3 text-slate-700 font-medium">
                             <span class="w-6 h-6 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs">✓</span>
@@ -227,13 +228,13 @@
         </div>
     </section>
 
-    <section id="specialties" class="py-32 bg-white overflow-hidden">
+    <section id="specialties" class="py-24 bg-white overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col lg:flex-row gap-16 items-center">
                 <div class="lg:w-1/2 reveal">
-                    <h2 class="text-brand-600 font-bold tracking-[0.2em] uppercase text-sm mb-4">Certified Documents</h2>
-                    <h3 class="text-4xl md:text-5xl font-bold font-serif text-slate-900 mb-8 leading-tight">Translation Specialized for Every Need</h3>
-                    <p class="text-slate-600 text-lg mb-8 leading-relaxed">We handle a vast array of document types, ensuring that technical jargon and official formatting are preserved with 100% accuracy.</p>
+                    <h2 class="text-brand-600 font-bold tracking-[0.2em] uppercase text-xs mb-4">Certified Documents</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold font-serif text-slate-900 mb-8 leading-tight">Translation Specialized for Every Need</h3>
+                    <p class="text-slate-600 text-base md:text-lg mb-8 leading-relaxed">We handle a vast array of document types, ensuring that technical jargon and official formatting are preserved with 100% accuracy.</p>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
                         <div class="flex items-start gap-3">
@@ -297,29 +298,29 @@
                 
                 <div class="lg:w-1/2 relative reveal reveal-delay-2">
                     <div class="absolute -inset-4 bg-brand-100 rounded-[3rem] -rotate-3 -z-10"></div>
-                    <div class="bg-brand-950 p-12 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden">
+                    <div class="bg-brand-950 p-10 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-64 h-64 bg-brand-800 rounded-full translate-x-1/2 -translate-y-1/2 blur-3xl opacity-30"></div>
-                        <h4 class="text-2xl font-bold font-serif mb-6">How it Works</h4>
-                        <div class="space-y-8">
-                            <div class="flex gap-6">
-                                <div class="w-10 h-10 rounded-full bg-brand-800 flex items-center justify-center font-bold flex-shrink-0">1</div>
+                        <h4 class="text-xl font-bold font-serif mb-6">How it Works</h4>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="w-8 h-8 rounded-full bg-brand-800 flex items-center justify-center text-sm font-bold flex-shrink-0">1</div>
                                 <div>
-                                    <p class="font-bold text-lg mb-1">Submit Your File</p>
-                                    <p class="text-brand-200 text-sm">Send us a clear photo or PDF via email or our portal.</p>
+                                    <p class="font-bold text-base mb-1">Submit Your File</p>
+                                    <p class="text-brand-200 text-xs leading-relaxed">Send us a clear photo or PDF via email or our portal.</p>
                                 </div>
                             </div>
-                            <div class="flex gap-6">
-                                <div class="w-10 h-10 rounded-full bg-brand-800 flex items-center justify-center font-bold flex-shrink-0">2</div>
+                            <div class="flex gap-4">
+                                <div class="w-8 h-8 rounded-full bg-brand-800 flex items-center justify-center text-sm font-bold flex-shrink-0">2</div>
                                 <div>
-                                    <p class="font-bold text-lg mb-1">Expert Review</p>
-                                    <p class="text-brand-200 text-sm">Our native-speaking linguists transcribe and translate with precision.</p>
+                                    <p class="font-bold text-base mb-1">Expert Review</p>
+                                    <p class="text-brand-200 text-xs leading-relaxed">Our native-speaking linguists transcribe and translate with precision.</p>
                                 </div>
                             </div>
-                            <div class="flex gap-6">
-                                <div class="w-10 h-10 rounded-full bg-brand-800 flex items-center justify-center font-bold flex-shrink-0">3</div>
+                            <div class="flex gap-4">
+                                <div class="w-8 h-8 rounded-full bg-brand-800 flex items-center justify-center text-sm font-bold flex-shrink-0">3</div>
                                 <div>
-                                    <p class="font-bold text-lg mb-1">Certification & Delivery</p>
-                                    <p class="text-brand-200 text-sm">Receive your certified digital copy within 24-48 hours. Hard copies available upon request.</p>
+                                    <p class="font-bold text-base mb-1">Certification & Delivery</p>
+                                    <p class="text-brand-200 text-xs leading-relaxed">Receive your certified digital copy within 24-48 hours. Hard copies available upon request.</p>
                                 </div>
                             </div>
                         </div>
@@ -329,12 +330,12 @@
         </div>
     </section>
 
-    <section id="languages" class="py-32 bg-slate-50 relative border-t border-slate-200">
+    <section id="languages" class="py-24 bg-slate-50 relative border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-20 reveal">
-                <h2 class="text-brand-600 font-bold tracking-[0.2em] uppercase text-sm mb-4">Global Reach</h2>
-                <h3 class="text-4xl md:text-5xl font-bold font-serif text-slate-900 mb-6">Supported Languages</h3>
-                <p class="text-slate-600 text-lg">We offer deep cultural expertise in the following languages, focusing on regional dialects and nuance.</p>
+            <div class="text-center max-w-xl mx-auto mb-16 reveal">
+                <h2 class="text-brand-600 font-bold tracking-[0.2em] uppercase text-xs mb-4">Global Reach</h2>
+                <h3 class="text-3xl md:text-4xl font-bold font-serif text-slate-900 mb-6">Supported Languages</h3>
+                <p class="text-slate-600 text-base md:text-lg">We offer deep cultural expertise in the following languages, focusing on regional dialects and nuance.</p>
             </div>
 
             <div id="language-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -343,13 +344,13 @@
         </div>
     </section>
 
-    <section id="about" class="py-32 bg-brand-950 text-white overflow-hidden">
+    <section id="about" class="py-24 bg-brand-950 text-white overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                 <div class="reveal">
-                    <h2 class="text-amber-400 font-bold tracking-[0.2em] uppercase text-sm mb-4">The LifeBridge Difference</h2>
-                    <h3 class="text-4xl md:text-5xl font-bold font-serif mb-8 leading-tight">A Commitment to Cultural Context</h3>
-                    <p class="text-brand-100/80 text-lg mb-8 leading-relaxed">At LifeBridge Support, we believe that language is more than just words—it's about building bridges between cultures. Our team consists of native speakers who understand the subtle nuances that a computer can't capture.</p>
+                    <h2 class="text-amber-400 font-bold tracking-[0.2em] uppercase text-xs mb-4">The LifeBridge Difference</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold font-serif mb-8 leading-tight">A Commitment to Cultural Context</h3>
+                    <p class="text-brand-100/80 text-base md:text-lg mb-8 leading-relaxed">At LifeBridge Support, we believe that language is more than just words—it's about building bridges between cultures. Our team consists of native speakers who understand the subtle nuances that a computer can't capture.</p>
                     
                     <div class="flex flex-wrap gap-4 mb-10">
                         <span class="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-xs font-bold uppercase tracking-wider">Hospitals & Clinics</span>
@@ -379,8 +380,8 @@
         </div>
     </section>
 
-    <section id="contact" class="py-32 bg-slate-50 relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-96 bg-white -z-10"></div>
+    <section id="contact" class="py-24 bg-slate-50 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-80 bg-white -z-10"></div>
         <div class="max-w-6xl mx-auto px-4 lg:px-8 relative z-10">
             <div class="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-slate-200 reveal">
                 <div class="grid grid-cols-1 lg:grid-cols-5">
