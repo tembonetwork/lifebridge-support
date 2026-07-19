@@ -209,6 +209,10 @@
         </div>
 
         <form id="interpreter-form">
+            <!-- Honeypot spam protection (Invisible to humans, bots will fill it) -->
+            <div class="hidden" style="display: none;">
+                <input type="text" name="honeypot_spam_check" id="honeypot_spam_check" autocomplete="off" tabindex="-1">
+            </div>
 
             <!-- ================= INTERPRETER AGREEMENT SHEET ================= -->
             <div class="form-sheet print-page z-10">
@@ -304,6 +308,13 @@
                 <p class="text-xs text-slate-500 mb-6 leading-relaxed">
                     By submitting, the system will automatically generate a PDF copy of your signed agreement and send it securely via email directly to the LifeBridge Support office.
                 </p>
+
+                <!-- Robot Proofing (Math Captcha) -->
+                <div class="mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col gap-2">
+                    <label id="captcha-label" class="text-xs font-semibold text-slate-700">Please verify you are human: What is 4 + 5?</label>
+                    <input type="text" id="captcha-input" required class="underline-input text-center font-bold text-slate-800 text-sm py-1 bg-transparent" placeholder="Your answer">
+                </div>
+
                 <button type="submit" id="submit-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg hover:shadow-brand-500/20 flex justify-center items-center gap-3 text-base">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
@@ -393,11 +404,28 @@
             }
         }
 
+        // Math Captcha Spam Protection
+        let captchaAnswer = 0;
+        function generateCaptcha() {
+            const num1 = Math.floor(Math.random() * 8) + 2; // 2 to 9
+            const num2 = Math.floor(Math.random() * 8) + 2; // 2 to 9
+            captchaAnswer = num1 + num2;
+            const label = document.getElementById('captcha-label');
+            if (label) {
+                label.textContent = `Please verify you are human: What is ${num1} + ${num2}?`;
+            }
+            const input = document.getElementById('captcha-input');
+            if (input) {
+                input.value = "";
+            }
+        }
+
         // Initialize drawing pad on DOM load
         let signaturePad;
 
         window.addEventListener('DOMContentLoaded', () => {
             signaturePad = new DrawingPad('interpreter-signature');
+            generateCaptcha();
 
             // Prefill current date
             const today = new Date().toISOString().split('T')[0];
@@ -484,6 +512,21 @@
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
+
+            // Honeypot check
+            const honeypot = document.getElementById('honeypot_spam_check').value;
+            if (honeypot && honeypot !== "") {
+                console.warn("Spam bot detected!");
+                return;
+            }
+
+            // Math Captcha verification
+            const userAnswer = parseInt(document.getElementById('captcha-input').value, 10);
+            if (userAnswer !== captchaAnswer) {
+                alert("Verification answer is incorrect. Please try again.");
+                generateCaptcha();
+                return;
+            }
 
             // Validate that the interpreter signature pad is not empty
             if (signaturePad.isEmpty()) {
@@ -584,6 +627,7 @@
         });
 
         function restoreButtonStates() {
+            generateCaptcha();
             submitBtn.innerHTML = `
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
