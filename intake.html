@@ -132,6 +132,11 @@
             .form-sheet:last-of-type {
                 page-break-after: avoid;
             }
+            /* Hide placeholders when printing so blank pages can be filled by hand */
+            input::placeholder, textarea::placeholder {
+                color: transparent !important;
+                opacity: 0 !important;
+            }
             /* Style inputs to display values as underlines */
             input[type="text"], input[type="date"], input[type="tel"], input[type="email"] {
                 border-bottom: 1px solid black !important;
