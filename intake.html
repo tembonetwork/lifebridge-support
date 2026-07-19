@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeBridge Support | Intake & Consent Packet</title>
+    <meta name="description" content="Online Intake and Consent packet for LifeBridge Support. Fill out, sign, and download/print your forms.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Bricolage+Grotesque:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f4ff',
+                            100: '#d9e2ff',
+                            200: '#bcd0ff',
+                            300: '#8fb1ff',
+                            400: '#5c8aff',
+                            500: '#335eff',
+                            600: '#1c3df5',
+                            700: '#1429e1',
+                            800: '#1222b6',
+                            900: '#152290',
+                            950: '#0a0e3a',
+                        },
+                        amber: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'Bricolage Grotesque', 'system-ui', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Outfit', sans-serif; }
+        
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Digital Sheet Style for on-screen view */
+        .form-sheet {
+            background: white;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            border-radius: 1.5rem;
+            width: 100%;
+            max-width: 8.5in;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+        }
+
+        /* Underline style inputs */
+        .underline-input {
+            border-bottom: 2px solid #cbd5e1;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .underline-input:focus {
+            border-color: #335eff;
+        }
+
+        /* Canvas Style */
+        .signature-canvas {
+            border: 2px dashed #cbd5e1;
+            background-color: #f8fafc;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background-color: white !important;
+                color: black !important;
+                font-size: 11pt !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            @page {
+                size: letter;
+                margin: 1.5cm;
+            }
+            .form-sheet {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin-bottom: 0 !important;
+                border-radius: 0 !important;
+                max-width: 100% !important;
+                page-break-after: always;
+                page-break-inside: avoid;
+                background: transparent !important;
+            }
+            .form-sheet:last-of-type {
+                page-break-after: avoid;
+            }
+            /* Style inputs to display values as underlines */
+            input[type="text"], input[type="date"], input[type="tel"], input[type="email"] {
+                border-bottom: 1px solid black !important;
+                border-top: none !important;
+                border-left: none !important;
+                border-right: none !important;
+                border-radius: 0 !important;
+                padding-bottom: 2px !important;
+                background: transparent !important;
+                width: 100% !important;
+            }
+            .underline-input {
+                border-bottom: 1px solid black !important;
+            }
+            .signature-canvas {
+                border: 1px solid black !important;
+                background-color: transparent !important;
+            }
+            /* Keep grid layouts from breaking */
+            .grid {
+                display: grid !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen pb-12">
+
+    <!-- Sticky Navigation Bar (Screen Only) -->
+    <nav class="fixed w-full z-50 glass-nav border-b border-slate-200/55 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer" onclick="location.href='index.html'">
+                    <img src="logo.png" alt="LifeBridge Support Logo" class="h-10 w-10 rounded-full object-cover shadow-sm border-2 border-brand-500/20">
+                    <span class="font-bold text-xl font-serif tracking-tight text-brand-950">LifeBridge Support</span>
+                </div>
+                <div class="flex space-x-4 items-center">
+                    <a href="index.html" class="text-slate-700 hover:text-brand-600 font-medium transition-colors text-sm px-3 py-2 rounded-lg hover:bg-slate-100">Back to Website</a>
+                    <button onclick="window.print()" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-full font-semibold transition-all shadow-md flex items-center gap-2 text-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                        </svg>
+                        Print / Save PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Top Spacer for Sticky Nav (Screen Only) -->
+    <div class="h-24 no-print"></div>
+
+    <!-- Main Container -->
+    <main class="max-w-5xl mx-auto px-4">
+        
+        <!-- Portal Header (Screen Only) -->
+        <div class="text-center max-w-2xl mx-auto mb-10 no-print">
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-100 text-brand-600 text-xs font-semibold mb-3">
+                Client Portal
+            </span>
+            <h1 class="text-3xl font-bold font-serif text-brand-950 mb-3">Client Intake & Consent Packet</h1>
+            <p class="text-slate-600 text-sm leading-relaxed">
+                Fill out the forms below digitally. When complete, click the **Print / Save PDF** button above to print a hard copy or save as a PDF for your records.
+            </p>
+            <div class="mt-6 flex justify-center gap-4">
+                <button onclick="resetAllForms()" class="text-xs text-slate-500 hover:text-red-600 transition-colors border border-slate-200 bg-white px-4 py-2 rounded-lg shadow-sm font-medium">
+                    Reset Forms
+                </button>
+            </div>
+        </div>
+
+        <form id="intake-packet-form" onsubmit="event.preventDefault();">
+
+            <!-- ================= PAGE 1: CLIENT INTAKE PACKET ================= -->
+            <div class="form-sheet print-page">
+                <!-- Header block -->
+                <div class="flex justify-between items-start border-b border-slate-200 pb-6 mb-8">
+                    <div class="flex items-center gap-3">
+                        <img src="logo.png" alt="LifeBridge Logo" class="h-14 w-14 rounded-full object-cover border-2 border-brand-500/20">
+                        <div>
+                            <h2 class="font-bold text-2xl font-serif tracking-tight text-brand-950 leading-none mb-1">LifeBridge Support</h2>
+                            <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold">Bridging Language & Care</p>
+                        </div>
+                    </div>
+                    <div class="text-right text-xs text-slate-500 leading-normal">
+                        <p class="font-bold text-slate-700">LifeBridge Support LLC</p>
+                        <p>3295 W Elder St, Suite 201</p>
+                        <p>Boise, ID 83705</p>
+                        <p>Phone: (208) 606-2055</p>
+                        <p>Email: lifebridgesupport@gmail.com</p>
+                    </div>
+                </div>
+
+                <!-- Title -->
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-bold font-serif text-slate-900">Client Intake Packet</h3>
+                    <p class="text-sm text-slate-500 mt-2">Welcome to LifeBridge Support. This intake packet contains the forms required to begin services.</p>
+                </div>
+
+                <!-- Fields -->
+                <div class="space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-end gap-4">
+                        <label class="font-semibold text-slate-700 text-sm min-w-[120px]">Client Name:</label>
+                        <input type="text" name="client_name" class="flex-grow underline-input text-slate-800 py-1 bg-transparent" placeholder="Enter full name" oninput="syncClientName(this.value)">
+                    </div>
+
+                    <div class="flex flex-col md:flex-row md:items-end gap-4">
+                        <label class="font-semibold text-slate-700 text-sm min-w-[120px]">Date of Birth:</label>
+                        <input type="date" name="client_dob" class="flex-grow underline-input text-slate-800 py-1 bg-transparent">
+                    </div>
+
+                    <div class="flex flex-col md:flex-row md:items-end gap-4">
+                        <label class="font-semibold text-slate-700 text-sm min-w-[120px]">Address:</label>
+                        <input type="text" name="client_address" class="flex-grow underline-input text-slate-800 py-1 bg-transparent" placeholder="Street, City, State, ZIP">
+                    </div>
+
+                    <div class="flex flex-col md:flex-row md:items-end gap-4">
+                        <label class="font-semibold text-slate-700 text-sm min-w-[120px]">Phone Number:</label>
+                        <input type="tel" name="client_phone" class="flex-grow underline-input text-slate-800 py-1 bg-transparent" placeholder="(000) 000-0000">
+                    </div>
+
+                    <div class="flex flex-col md:flex-row md:items-end gap-4">
+                        <label class="font-semibold text-slate-700 text-sm min-w-[120px]">Email Address:</label>
+                        <input type="email" name="client_email" class="flex-grow underline-input text-slate-800 py-1 bg-transparent" placeholder="name@domain.com">
+                    </div>
+
+                    <div class="flex flex-col md:flex-row md:items-end gap-4">
+                        <label class="font-semibold text-slate-700 text-sm min-w-[120px]">Emergency Contact:</label>
+                        <input type="text" name="client_emergency" class="flex-grow underline-input text-slate-800 py-1 bg-transparent" placeholder="Name, Relationship & Phone Number">
+                    </div>
+                </div>
+
+                <!-- Requested Services Checkboxes -->
+                <div class="mt-10">
+                    <h4 class="font-bold text-slate-900 border-b border-slate-200 pb-2 mb-4 text-sm uppercase tracking-wider">Requested Services</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                        <label class="flex items-center gap-3 text-slate-700 text-sm font-medium cursor-pointer">
+                            <input type="checkbox" name="services" value="therapy" class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                            <span>Mental Health Therapy <span class="text-xs text-slate-400 font-normal">(Individual, Group, Family)</span></span>
+                        </label>
+                        <label class="flex items-center gap-3 text-slate-700 text-sm font-medium cursor-pointer">
+                            <input type="checkbox" name="services" value="case_management" class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                            <span>Case Management Services</span>
+                        </label>
+                        <label class="flex items-center gap-3 text-slate-700 text-sm font-medium cursor-pointer">
+                            <input type="checkbox" name="services" value="cbrs" class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                            <span>Community-Based Rehabilitation Services <span class="text-xs text-slate-400 font-normal">(CBRS)</span></span>
+                        </label>
+                        <label class="flex items-center gap-3 text-slate-700 text-sm font-medium cursor-pointer">
+                            <input type="checkbox" name="services" value="peer_support" class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                            <span>Peer Support Services</span>
+                        </label>
+                        <label class="flex items-center gap-3 text-slate-700 text-sm font-medium cursor-pointer">
+                            <input type="checkbox" name="services" value="interpreter" class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                            <span>Interpreter Services</span>
+                        </label>
+                        <label class="flex items-center gap-3 text-slate-700 text-sm font-medium cursor-pointer">
+                            <input type="checkbox" name="services" value="telehealth" class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                            <span>Telehealth Services</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= PAGE 2: CLIENT CONSENT & AUTHORIZATION ================= -->
+            <div class="form-sheet print-page">
+                <!-- Header block -->
+                <div class="flex justify-between items-start border-b border-slate-200 pb-6 mb-8">
+                    <div class="flex items-center gap-3">
+                        <img src="logo.png" alt="LifeBridge Logo" class="h-14 w-14 rounded-full object-cover border-2 border-brand-500/20">
+                        <div>
+                            <h2 class="font-bold text-2xl font-serif tracking-tight text-brand-950 leading-none mb-1">LifeBridge Support</h2>
+                            <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold">Bridging Language & Care</p>
+                        </div>
+                    </div>
+                    <div class="text-right text-xs text-slate-500 leading-normal">
+                        <p class="font-bold text-slate-700">LifeBridge Support LLC</p>
+                        <p>3295 W Elder St, Suite 201</p>
+                        <p>Boise, ID 83705</p>
+                        <p>Phone: (208) 606-2055</p>
+                        <p>Email: lifebridgesupport@gmail.com</p>
+                    </div>
+                </div>
+
+                <!-- Title -->
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-bold font-serif text-slate-900">Client Consent & Authorization</h3>
+                </div>
+
+                <!-- Terms -->
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200/60 mb-8 text-slate-700 text-sm leading-relaxed print:bg-transparent print:p-0 print:border-none print:text-black">
+                    <p class="font-medium">
+                        I voluntarily consent to receive services through LifeBridge Support. Information shared will remain confidential in accordance with HIPAA and Idaho Medicaid regulations.
+                    </p>
+                </div>
+
+                <!-- Fields -->
+                <div class="space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-end gap-4">
+                        <label class="font-semibold text-slate-700 text-sm min-w-[160px]">Client/Guardian Name:</label>
+                        <input type="text" name="consent_client_name" class="flex-grow underline-input text-slate-800 py-1 bg-transparent synced-client-name" placeholder="Full name">
+                    </div>
+
+                    <!-- Client Signature Pad -->
+                    <div class="flex flex-col gap-2 mt-4">
+                        <div class="flex justify-between items-center no-print">
+                            <label class="font-semibold text-slate-700 text-sm">Client Signature (Draw below):</label>
+                            <button type="button" onclick="clearSignature('client-signature')" class="text-xs text-red-500 hover:text-red-700 transition-colors">Clear</button>
+                        </div>
+                        <label class="hidden print:block font-semibold text-slate-700 text-sm">Client Signature:</label>
+                        <canvas id="client-signature" class="signature-canvas w-full h-32 rounded-xl" width="600" height="150"></canvas>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row md:items-end gap-4">
+                        <label class="font-semibold text-slate-700 text-sm min-w-[160px]">Date:</label>
+                        <input type="date" name="consent_date" class="flex-grow underline-input text-slate-800 py-1 bg-transparent">
+                    </div>
+
+                    <!-- Staff Witness Signature Pad -->
+                    <div class="flex flex-col gap-2 mt-4">
+                        <div class="flex justify-between items-center no-print">
+                            <label class="font-semibold text-slate-700 text-sm">Staff Witness Signature (Draw below):</label>
+                            <button type="button" onclick="clearSignature('staff-signature')" class="text-xs text-red-500 hover:text-red-700 transition-colors">Clear</button>
+                        </div>
+                        <label class="hidden print:block font-semibold text-slate-700 text-sm">Staff Witness:</label>
+                        <canvas id="staff-signature" class="signature-canvas w-full h-32 rounded-xl" width="600" height="150"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= PAGE 3: INTERPRETER CONFIDENTIALITY AGREEMENT ================= -->
+            <div class="form-sheet print-page">
+                <!-- Header block -->
+                <div class="flex justify-between items-start border-b border-slate-200 pb-6 mb-8">
+                    <div class="flex items-center gap-3">
+                        <img src="logo.png" alt="LifeBridge Logo" class="h-14 w-14 rounded-full object-cover border-2 border-brand-500/20">
+                        <div>
+                            <h2 class="font-bold text-2xl font-serif tracking-tight text-brand-950 leading-none mb-1">LifeBridge Support</h2>
+                            <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold">Bridging Language & Care</p>
+                        </div>
+                    </div>
+                    <div class="text-right text-xs text-slate-500 leading-normal">
+                        <p class="font-bold text-slate-700">LifeBridge Support LLC</p>
+                        <p>3295 W Elder St, Suite 201</p>
+                        <p>Boise, ID 83705</p>
+                        <p>Phone: (208) 606-2055</p>
+                        <p>Email: lifebridgesupport@gmail.com</p>
+                    </div>
+                </div>
+
+                <!-- Title -->
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-bold font-serif text-slate-900">Interpreter Confidentiality Agreement</h3>
+                </div>
+
+                <!-- Terms -->
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200/60 mb-8 text-slate-700 text-sm leading-relaxed print:bg-transparent print:p-0 print:border-none print:text-black">
+                    <p class="font-medium">
+                        As an interpreter working with LifeBridge Support, I agree to maintain strict confidentiality and comply with HIPAA privacy standards.
+                    </p>
+                </div>
+
+                <!-- Fields -->
+                <div class="space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-end gap-4">
+                        <label class="font-semibold text-slate-700 text-sm min-w-[160px]">Interpreter Name:</label>
+                        <input type="text" name="interpreter_name" class="flex-grow underline-input text-slate-800 py-1 bg-transparent" placeholder="Interpreter full name">
+                    </div>
+
+                    <!-- Interpreter Signature Pad -->
+                    <div class="flex flex-col gap-2 mt-4">
+                        <div class="flex justify-between items-center no-print">
+                            <label class="font-semibold text-slate-700 text-sm">Interpreter Signature (Draw below):</label>
+                            <button type="button" onclick="clearSignature('interpreter-signature')" class="text-xs text-red-500 hover:text-red-700 transition-colors">Clear</button>
+                        </div>
+                        <label class="hidden print:block font-semibold text-slate-700 text-sm">Interpreter Signature:</label>
+                        <canvas id="interpreter-signature" class="signature-canvas w-full h-32 rounded-xl" width="600" height="150"></canvas>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row md:items-end gap-4">
+                        <label class="font-semibold text-slate-700 text-sm min-w-[160px]">Date:</label>
+                        <input type="date" name="interpreter_date" class="flex-grow underline-input text-slate-800 py-1 bg-transparent">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= PAGE 4: AUTHORIZATION OF EXCHANGE OF INFORMATION ================= -->
+            <div class="form-sheet print-page">
+                <!-- Header block -->
+                <div class="flex justify-between items-start border-b border-slate-200 pb-4 mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="logo.png" alt="LifeBridge Logo" class="h-12 w-12 rounded-full object-cover border-2 border-brand-500/20">
+                        <div>
+                            <h2 class="font-bold text-xl font-serif tracking-tight text-brand-950 leading-none mb-1">LifeBridge Support LLC</h2>
+                            <p class="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Counseling, Case Management, Peer Support & Family Supports</p>
+                        </div>
+                    </div>
+                    <div class="text-right text-[10px] text-slate-500 leading-tight">
+                        <p>3295 W Elder St, Suite 201</p>
+                        <p>Boise, ID 83705</p>
+                        <p>Phone: (208) 606-2055</p>
+                    </div>
+                </div>
+
+                <!-- Title & Subtitle -->
+                <div class="text-center mb-6">
+                    <h3 class="text-lg font-bold font-serif text-slate-900">Authorization of Exchange of Information</h3>
+                    <p class="text-xs text-brand-600 italic mt-1 font-medium">Let's make a difference one person at a time.</p>
+                </div>
+
+                <!-- Statement Fields -->
+                <div class="space-y-4 text-sm">
+                    <div class="flex flex-wrap items-end gap-2">
+                        <span>I,</span>
+                        <input type="text" name="exchange_client_name" class="w-48 underline-input text-slate-800 bg-transparent px-1 font-semibold synced-client-name" placeholder="Client Name">
+                        <span>authorize LifeBridge Support, LLC to exchange information with:</span>
+                    </div>
+
+                    <!-- Target Recipient Box -->
+                    <div class="border border-slate-200 rounded-xl p-4 space-y-3 bg-slate-50/50 print:border-black print:bg-transparent print:p-0 print:border-none">
+                        <div class="flex flex-col md:flex-row md:items-end gap-2">
+                            <label class="text-xs font-semibold text-slate-600 min-w-[120px]">Name of Provider/Org:</label>
+                            <input type="text" name="exchange_target_name" class="flex-grow underline-input text-slate-800 bg-transparent text-xs py-0.5">
+                        </div>
+                        <div class="flex flex-col md:flex-row md:items-end gap-2">
+                            <label class="text-xs font-semibold text-slate-600 min-w-[120px]">Address of Org:</label>
+                            <input type="text" name="exchange_target_address" class="flex-grow underline-input text-slate-800 bg-transparent text-xs py-0.5">
+                        </div>
+                        <div class="flex flex-col md:flex-row md:items-end gap-2">
+                            <label class="text-xs font-semibold text-slate-600 min-w-[120px]">Phone/Fax/Email:</label>
+                            <input type="text" name="exchange_target_contact" class="flex-grow underline-input text-slate-800 bg-transparent text-xs py-0.5">
+                        </div>
+                    </div>
+
+                    <!-- General Agreement -->
+                    <p class="text-xs text-slate-600 leading-relaxed text-justify print:text-black">
+                        Regarding my mental health and other services being provided at LifeBridge Support, LLC; social and emotional functioning; and any additional pertaining information. This exchange of information is for the sole purpose of treatment planning and evaluation, and the comprehensive coordination of care. I understand that this authorization expires one year from the date it was signed, unless revoked in writing prior to its expiration date.
+                    </p>
+
+                    <!-- Checkboxes permitted info -->
+                    <div class="mt-4">
+                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider mb-2">Please specify information permitted to be exchanged:</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 text-xs">
+                            <label class="flex items-center gap-2 cursor-pointer text-slate-700">
+                                <input type="checkbox" name="exchange_items" value="family_history" class="w-3.5 h-3.5 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                                <span>Family and Social History</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer text-slate-700">
+                                <input type="checkbox" name="exchange_items" value="progress_notes" class="w-3.5 h-3.5 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                                <span>Progress Notes</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer text-slate-700">
+                                <input type="checkbox" name="exchange_items" value="treatment_plan" class="w-3.5 h-3.5 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                                <span>Treatment plan/progress</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer text-slate-700">
+                                <input type="checkbox" name="exchange_items" value="diagnosis" class="w-3.5 h-3.5 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                                <span>Diagnosis</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer text-slate-700">
+                                <input type="checkbox" name="exchange_items" value="educational" class="w-3.5 h-3.5 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                                <span>Educational Records</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer text-slate-700">
+                                <input type="checkbox" name="exchange_items" value="psychological" class="w-3.5 h-3.5 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                                <span>Psychological Info/Testing</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer text-slate-700">
+                                <input type="checkbox" name="exchange_items" value="substance_abuse" class="w-3.5 h-3.5 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                                <span>Substance Abuse Records</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer text-slate-700">
+                                <input type="checkbox" name="exchange_items" value="medical_history" class="w-3.5 h-3.5 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                                <span>Medical History</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer text-slate-700">
+                                <input type="checkbox" name="exchange_items" value="discharge_summary" class="w-3.5 h-3.5 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                                <span>Discharge Summary</span>
+                            </label>
+                        </div>
+                        <div class="flex items-end gap-2 text-xs mt-3">
+                            <span class="text-slate-700">Other (Specify):</span>
+                            <input type="text" name="exchange_items_other" class="flex-grow underline-input bg-transparent py-0.5">
+                        </div>
+                    </div>
+
+                    <!-- HIPAA Disclosure Terms (Compact text) -->
+                    <div class="border-t border-slate-200 pt-3 mt-4">
+                        <p class="text-[10px] text-slate-500 leading-normal text-justify print:text-black">
+                            I understand that I have the right to revoke this authorization, in writing, at any time by sending notice to LifeBridge Support, LLC and my service provider. I understand that a revocation is not valid to the extent that LifeBridge Support, LLC has already acted in reliance on such authorization. This authorization is valid until one year from date signed unless revoked earlier. I understand that information will be disclosed only as determined necessary by my service provider. If records are released to lawyers in legal proceedings, I understand that information may be shared with any and all parties involved in the legal proceedings. In consideration of this consent, I hereby release the source of the records from any and all liability arising therefrom. A copy of this release shall have the same force and effect as the original.
+                        </p>
+                    </div>
+
+                    <!-- Signatures & Dates in side-by-side Layout -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
+                        <div class="space-y-4">
+                            <div class="flex flex-col gap-1">
+                                <div class="flex justify-between items-center no-print">
+                                    <label class="text-xs font-semibold text-slate-700">Client Signature (Draw below):</label>
+                                    <button type="button" onclick="clearSignature('exchange-client-signature')" class="text-[10px] text-red-500 hover:text-red-700">Clear</button>
+                                </div>
+                                <label class="hidden print:block text-xs font-semibold text-slate-700">Signature of Authorizing Client:</label>
+                                <canvas id="exchange-client-signature" class="signature-canvas w-full h-24 rounded-lg" width="400" height="100"></canvas>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <label class="text-xs font-semibold text-slate-700">Date:</label>
+                                <input type="date" name="exchange_client_date" class="flex-grow underline-input text-xs py-0.5 bg-transparent">
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex flex-col gap-1">
+                                <div class="flex justify-between items-center no-print">
+                                    <label class="text-xs font-semibold text-slate-700">Provider Signature (Draw below):</label>
+                                    <button type="button" onclick="clearSignature('exchange-provider-signature')" class="text-[10px] text-red-500 hover:text-red-700">Clear</button>
+                                </div>
+                                <label class="hidden print:block text-xs font-semibold text-slate-700">Signature and Position of Service Provider:</label>
+                                <canvas id="exchange-provider-signature" class="signature-canvas w-full h-24 rounded-lg" width="400" height="100"></canvas>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <label class="text-xs font-semibold text-slate-700">Date:</label>
+                                <input type="date" name="exchange_provider_date" class="flex-grow underline-input text-xs py-0.5 bg-transparent">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer Callout -->
+                    <div class="border-t border-slate-200 pt-3 text-center">
+                        <p class="text-xs font-semibold text-brand-900 print:text-black">
+                            Please fax completed information to (208) 606-2055 or email to lifebridgesupport@gmail.com
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </main>
+
+    <!-- Canvas Drawing Script -->
+    <script>
+        class DrawingPad {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.isDrawing = false;
+                
+                // Set drawing styles
+                this.ctx.strokeStyle = '#0f172a'; // Slate-900 color
+                this.ctx.lineWidth = 2.5;
+                this.ctx.lineCap = 'round';
+                this.ctx.lineJoin = 'round';
+                
+                // Add event listeners for drawing
+                this.canvas.addEventListener('mousedown', (e) => this.startDrawing(e));
+                this.canvas.addEventListener('mousemove', (e) => this.draw(e));
+                this.canvas.addEventListener('mouseup', () => this.stopDrawing());
+                this.canvas.addEventListener('mouseout', () => this.stopDrawing());
+                
+                // Touch events for tablet/mobile
+                this.canvas.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const rect = this.canvas.getBoundingClientRect();
+                    this.isDrawing = true;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+                });
+                this.canvas.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    if (!this.isDrawing) return;
+                    const touch = e.touches[0];
+                    const rect = this.canvas.getBoundingClientRect();
+                    this.ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+                    this.ctx.stroke();
+                });
+                this.canvas.addEventListener('touchend', () => this.stopDrawing());
+            }
+
+            startDrawing(e) {
+                this.isDrawing = true;
+                const rect = this.canvas.getBoundingClientRect();
+                this.ctx.beginPath();
+                this.ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+            }
+
+            draw(e) {
+                if (!this.isDrawing) return;
+                const rect = this.canvas.getBoundingClientRect();
+                this.ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+                this.ctx.stroke();
+            }
+
+            stopDrawing() {
+                this.isDrawing = false;
+            }
+
+            clear() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            }
+        }
+
+        // Initialize drawing pads on DOM load
+        const signaturePads = {};
+
+        window.addEventListener('DOMContentLoaded', () => {
+            signaturePads['client-signature'] = new DrawingPad('client-signature');
+            signaturePads['staff-signature'] = new DrawingPad('staff-signature');
+            signaturePads['interpreter-signature'] = new DrawingPad('interpreter-signature');
+            signaturePads['exchange-client-signature'] = new DrawingPad('exchange-client-signature');
+            signaturePads['exchange-provider-signature'] = new DrawingPad('exchange-provider-signature');
+
+            // Prefill current date in date fields
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelectorAll('input[type="date"]').forEach(input => {
+                input.value = today;
+            });
+        });
+
+        function clearSignature(canvasId) {
+            if (signaturePads[canvasId]) {
+                signaturePads[canvasId].clear();
+            }
+        }
+
+        function resetAllForms() {
+            if (confirm("Are you sure you want to clear all inputs and signatures?")) {
+                document.getElementById('intake-packet-form').reset();
+                Object.values(signaturePads).forEach(pad => pad.clear());
+                
+                // Reset dates to today
+                const today = new Date().toISOString().split('T')[0];
+                document.querySelectorAll('input[type="date"]').forEach(input => {
+                    input.value = today;
+                });
+            }
+        }
+
+        // Sync client name between forms for speed of entry
+        function syncClientName(val) {
+            document.querySelectorAll('.synced-client-name').forEach(input => {
+                input.value = val;
+            });
+        }
+    </script>
+</body>
+</html>
