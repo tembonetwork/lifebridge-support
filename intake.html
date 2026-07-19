@@ -863,7 +863,15 @@
             };
 
             const sheetsContainer = createCleanPDFContainer();
-            return html2pdf().set(opt).from(sheetsContainer).output('blob');
+            sheetsContainer.style.position = 'absolute';
+            sheetsContainer.style.left = '-9999px';
+            sheetsContainer.style.top = '0';
+            document.body.appendChild(sheetsContainer);
+            
+            return html2pdf().set(opt).from(sheetsContainer).output('blob').then(blob => {
+                document.body.removeChild(sheetsContainer);
+                return blob;
+            });
         }
 
         // Direct PDF download using html2pdf.js
@@ -880,7 +888,14 @@
             };
 
             const sheetsContainer = createCleanPDFContainer();
-            html2pdf().set(opt).from(sheetsContainer).save();
+            sheetsContainer.style.position = 'absolute';
+            sheetsContainer.style.left = '-9999px';
+            sheetsContainer.style.top = '0';
+            document.body.appendChild(sheetsContainer);
+            
+            html2pdf().set(opt).from(sheetsContainer).save().then(() => {
+                document.body.removeChild(sheetsContainer);
+            });
         }
 
         // Form Submission Router (Caters for Free Web3Forms vs Direct Google Script Web App)
