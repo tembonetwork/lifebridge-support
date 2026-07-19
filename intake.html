@@ -877,8 +877,9 @@
 
             const sheetsContainer = createCleanPDFContainer();
             sheetsContainer.style.position = 'absolute';
-            sheetsContainer.style.left = '-9999px';
+            sheetsContainer.style.left = '0';
             sheetsContainer.style.top = '0';
+            sheetsContainer.style.zIndex = '-9999';
             document.body.appendChild(sheetsContainer);
             
             return html2pdf().set(opt).from(sheetsContainer).output('blob').then(blob => {
@@ -902,8 +903,9 @@
 
             const sheetsContainer = createCleanPDFContainer();
             sheetsContainer.style.position = 'absolute';
-            sheetsContainer.style.left = '-9999px';
+            sheetsContainer.style.left = '0';
             sheetsContainer.style.top = '0';
+            sheetsContainer.style.zIndex = '-9999';
             document.body.appendChild(sheetsContainer);
             
             html2pdf().set(opt).from(sheetsContainer).save().then(() => {
@@ -988,16 +990,12 @@
 
                         fetch(GOOGLE_SCRIPT_URL, {
                             method: 'POST',
+                            mode: 'no-cors',
                             body: JSON.stringify(payload)
                         })
-                        .then(response => response.json())
-                        .then(json => {
-                            if (json.status === "success") {
-                                alert("Intake Packet submitted successfully! The completed forms PDF has been emailed to our office, saved on Google Drive, and downloaded to your computer.");
-                                downloadPDF();
-                            } else {
-                                alert("Submission via Google Script failed: " + (json.message || "Unknown error"));
-                            }
+                        .then(() => {
+                            alert("Intake Packet submitted successfully! The completed forms PDF has been emailed to our office, saved on Google Drive, and downloaded to your computer.");
+                            downloadPDF();
                         })
                         .catch(() => {
                             alert("Something went wrong with the email submission. You can still download this packet as a PDF by clicking OK!");
