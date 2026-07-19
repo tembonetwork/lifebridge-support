@@ -724,7 +724,19 @@
         // Initialize drawing pads on DOM load
         const signaturePads = {};
 
-        window.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lock all date inputs strictly to today's date
+            const today = new Date().toLocaleDateString('en-CA'); // 'YYYY-MM-DD' in local timezone
+            document.querySelectorAll('input[type="date"]').forEach(el => {
+                el.min = today;
+                el.max = today;
+                
+                // If it's a signature date, auto-fill it immediately so it's always today
+                if (el.name && el.name.includes('date')) {
+                    el.value = today;
+                }
+            });
+
             signaturePads['client-signature'] = new DrawingPad('client-signature');
             signaturePads['staff-signature'] = new DrawingPad('staff-signature');
             signaturePads['exchange-client-signature'] = new DrawingPad('exchange-client-signature');
@@ -866,7 +878,7 @@
         function generatePDFBlob() {
             const first = document.querySelector('input[name="client_first_name"]').value || "";
             const last = document.querySelector('input[name="client_last_name"]').value || "";
-            const clientName = `${first} ${last}`.trim() || "Client";
+            const clientName = `${first} ${last}`.trim() || "Intake_Packet";
             const opt = {
                 margin:       10, // mm margins
                 filename:     `${clientName.replace(/\s+/g, '_')}_Intake_Packet.pdf`,
@@ -877,7 +889,31 @@
 
             const sheetsContainer = createCleanPDFContainer();
             
-            return html2pdf().set(opt).from(sheetsContainer).output('blob');
+            // To force Safari/iOS to render the canvas, the element MUST be statically in the DOM layout.
+            // We append it normally, but cover the entire screen with a fixed loading overlay so the user doesn't see it.
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100vw';
+            overlay.style.height = '100vh';
+            overlay.style.backgroundColor = '#f8fafc';
+            overlay.style.zIndex = '999999';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.innerHTML = '<div class="text-brand-600 font-bold text-xl flex flex-col items-center gap-4"><span class="animate-spin w-10 h-10 border-4 border-brand-200 border-t-brand-600 rounded-full"></span><span>Processing Document...</span></div>';
+            
+            document.body.appendChild(overlay);
+            document.body.appendChild(sheetsContainer);
+            window.scrollTo(0, document.body.scrollHeight); // Force browser to compute layout
+            
+            return html2pdf().set(opt).from(sheetsContainer).output('blob').then(blob => {
+                document.body.removeChild(sheetsContainer);
+                document.body.removeChild(overlay);
+                window.scrollTo({ top: 0, behavior: 'instant' });
+                return blob;
+            });
         }
 
         // Direct PDF download using html2pdf.js
@@ -895,7 +931,28 @@
 
             const sheetsContainer = createCleanPDFContainer();
             
-            html2pdf().set(opt).from(sheetsContainer).save();
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100vw';
+            overlay.style.height = '100vh';
+            overlay.style.backgroundColor = '#f8fafc';
+            overlay.style.zIndex = '999999';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.innerHTML = '<div class="text-brand-600 font-bold text-xl flex flex-col items-center gap-4"><span class="animate-spin w-10 h-10 border-4 border-brand-200 border-t-brand-600 rounded-full"></span><span>Generating PDF...</span></div>';
+            
+            document.body.appendChild(overlay);
+            document.body.appendChild(sheetsContainer);
+            window.scrollTo(0, document.body.scrollHeight);
+            
+            html2pdf().set(opt).from(sheetsContainer).save().then(() => {
+                document.body.removeChild(sheetsContainer);
+                document.body.removeChild(overlay);
+                window.scrollTo({ top: 0, behavior: 'instant' });
+            });
         }
 
         // Form Submission Router (Caters for Free Web3Forms vs Direct Google Script Web App)
