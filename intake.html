@@ -713,12 +713,6 @@
             signaturePads['exchange-provider-signature'] = new DrawingPad('exchange-provider-signature');
 
             generateCaptcha();
-
-            // Prefill current date in date fields
-            const today = new Date().toISOString().split('T')[0];
-            document.querySelectorAll('input[type="date"]').forEach(input => {
-                input.value = today;
-            });
         });
 
         function clearSignature(canvasId) {

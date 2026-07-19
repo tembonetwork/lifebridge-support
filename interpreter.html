@@ -437,10 +437,6 @@
         window.addEventListener('DOMContentLoaded', () => {
             signaturePad = new DrawingPad('interpreter-signature');
             generateCaptcha();
-
-            // Prefill current date
-            const today = new Date().toISOString().split('T')[0];
-            document.querySelector('input[type="date"]').value = today;
         });
 
         function clearSignature() {
