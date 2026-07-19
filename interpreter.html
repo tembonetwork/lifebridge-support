@@ -587,16 +587,8 @@
             };
 
             const sheetsContainer = createCleanPDFContainer();
-            sheetsContainer.style.position = 'absolute';
-            sheetsContainer.style.left = '0';
-            sheetsContainer.style.top = '0';
-            sheetsContainer.style.zIndex = '-9999';
-            document.body.appendChild(sheetsContainer);
             
-            return html2pdf().set(opt).from(sheetsContainer).output('blob').then(blob => {
-                document.body.removeChild(sheetsContainer);
-                return blob;
-            });
+            return html2pdf().set(opt).from(sheetsContainer).output('blob');
         }
 
         // Direct PDF download using html2pdf.js
@@ -613,15 +605,8 @@
             };
 
             const sheetsContainer = createCleanPDFContainer();
-            sheetsContainer.style.position = 'absolute';
-            sheetsContainer.style.left = '0';
-            sheetsContainer.style.top = '0';
-            sheetsContainer.style.zIndex = '-9999';
-            document.body.appendChild(sheetsContainer);
             
-            html2pdf().set(opt).from(sheetsContainer).save().then(() => {
-                document.body.removeChild(sheetsContainer);
-            });
+            html2pdf().set(opt).from(sheetsContainer).save();
         }
 
         // Web3Forms Form Submission
@@ -664,6 +649,14 @@
             submitBtn.disabled = true;
             submitBtnTop.innerHTML = loadingText;
             submitBtnTop.disabled = true;
+
+            // Auto-fill empty dates with today's date before generating PDF
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelectorAll('input[type="date"]').forEach(dateInput => {
+                if (!dateInput.value) {
+                    dateInput.value = today;
+                }
+            });
 
             // Generate the PDF blob and submit it via Web3Forms FormData
             generatePDFBlob().then(pdfBlob => {
