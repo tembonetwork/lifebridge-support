@@ -11,6 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Bricolage+Grotesque:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- PDF Generation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -67,6 +69,10 @@
             margin-right: auto;
             position: relative;
             overflow: hidden;
+            
+            /* Tiled Watermark covering entire page (8% opacity) */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='180' viewBox='0 0 250 180'%3E%3Ctext x='20' y='100' font-family='Outfit, sans-serif' font-size='18' font-weight='800' fill='rgba(15, 23, 42, 0.08)' transform='rotate(-25 20 100)' style='text-transform: uppercase; letter-spacing: 0.12em; user-select: none;'%3ELifeBridge Support%3C/text%3E%3C/svg%3E") !important;
+            background-repeat: repeat !important;
         }
 
         /* Underline style inputs */
@@ -85,23 +91,8 @@
             background-color: #f8fafc;
             cursor: crosshair;
             touch-action: none;
-        }
-
-        /* Watermark styling - Increased visibility to 8% */
-        .watermark {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 5rem;
-            color: rgba(15, 23, 42, 0.08); /* Increased visibility (8%) */
-            font-weight: 800;
-            pointer-events: none;
-            white-space: nowrap;
-            z-index: 0;
-            user-select: none;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
+            position: relative;
+            z-index: 10;
         }
 
         /* Print styles */
@@ -128,6 +119,12 @@
                 page-break-after: always;
                 page-break-inside: avoid;
                 background: transparent !important;
+                
+                /* Tiled watermark in print (8.5% opacity) */
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='180' viewBox='0 0 250 180'%3E%3Ctext x='20' y='100' font-family='Outfit, sans-serif' font-size='18' font-weight='800' fill='rgba(0, 0, 0, 0.085)' transform='rotate(-25 20 100)' style='text-transform: uppercase; letter-spacing: 0.12em; user-select: none;'%3ELifeBridge Support%3C/text%3E%3C/svg%3E") !important;
+                background-repeat: repeat !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
             .form-sheet:last-of-type {
                 page-break-after: avoid;
@@ -174,7 +171,7 @@
                 </div>
                 <div class="flex space-x-4 items-center">
                     <a href="index.html" class="text-slate-700 hover:text-brand-600 font-medium transition-colors text-sm px-3 py-2 rounded-lg hover:bg-slate-100">Back to Website</a>
-                    <button type="button" onclick="triggerPrintOnly()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-full font-semibold transition-all flex items-center gap-2 text-sm">
+                    <button type="button" onclick="triggerPrint()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-full font-semibold transition-all flex items-center gap-2 text-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                         </svg>
@@ -204,7 +201,7 @@
             </span>
             <h1 class="text-3xl font-bold font-serif text-brand-950 mb-3">Interpreter Confidentiality Agreement</h1>
             <p class="text-slate-600 text-sm leading-relaxed">
-                Please review the terms below, fill in your name, sign digitally, and click **Submit Agreement** to generate your completed PDF and automatically open your email app to send it to us.
+                Please review the terms below, fill in your name, sign digitally, and click **Submit Agreement** to generate your completed PDF and send it to our team.
             </p>
         </div>
 
@@ -212,8 +209,6 @@
 
             <!-- ================= INTERPRETER AGREEMENT SHEET ================= -->
             <div class="form-sheet print-page z-10">
-                <div class="watermark select-none pointer-events-none">LifeBridge Support</div>
-                
                 <!-- Header block -->
                 <div class="flex justify-between items-start border-b border-slate-200 pb-6 mb-8 relative z-10">
                     <div class="flex items-center gap-3">
@@ -282,13 +277,13 @@
             <div class="max-w-md mx-auto mt-8 mb-12 p-8 bg-white border border-slate-200 rounded-[2rem] shadow-lg text-center no-print relative z-10">
                 <h4 class="font-bold text-slate-900 font-serif text-lg mb-2">Submit Agreement</h4>
                 <p class="text-xs text-slate-500 mb-6 leading-relaxed">
-                    By submitting, the browser will open the Print/Save window. **Select 'Save as PDF'** to save the completed agreement. Next, your email client will launch automatically so you can attach the PDF and send it to our team.
+                    By submitting, the system will automatically generate a PDF copy of your signed agreement and send it securely via email directly to the LifeBridge Support office.
                 </p>
                 <button type="submit" id="submit-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg hover:shadow-brand-500/20 flex justify-center items-center gap-3 text-base">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                     </svg>
-                    Save PDF & Open Email
+                    Submit Agreement (Email Attachment)
                 </button>
             </div>
 
@@ -364,6 +359,10 @@
             isEmpty() {
                 return !this.hasContent;
             }
+
+            toDataURL() {
+                return this.canvas.toDataURL();
+            }
         }
 
         // Initialize drawing pad on DOM load
@@ -384,35 +383,138 @@
         }
 
         // Print/Save Actions
-        let isSubmitting = false;
-
-        function triggerPrintOnly() {
-            isSubmitting = false;
+        function triggerPrint() {
             window.print();
         }
 
+        // Generate PDF Blob using html2pdf.js
+        function generatePDFBlob() {
+            const interpreterName = document.querySelector('input[name="interpreter_name"]').value || "Interpreter";
+            const opt = {
+                margin:       10, // mm margins
+                filename:     `${interpreterName.replace(/\s+/g, '_')}_Interpreter_Agreement.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
+            };
+
+            const sheetsContainer = document.createElement('div');
+            sheetsContainer.style.background = '#ffffff';
+            sheetsContainer.style.color = '#000000';
+            sheetsContainer.style.width = '100%';
+            
+            document.querySelectorAll('.form-sheet').forEach(sheet => {
+                const clone = sheet.cloneNode(true);
+                
+                clone.style.boxShadow = 'none';
+                clone.style.border = 'none';
+                clone.style.margin = '0';
+                clone.style.padding = '20px';
+
+                // Flatten inputs
+                sheet.querySelectorAll('input').forEach((input, idx) => {
+                    const cloneInput = clone.querySelectorAll('input')[idx];
+                    if (cloneInput) {
+                        const textSpan = document.createElement('span');
+                        textSpan.innerHTML = input.value || '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                        textSpan.className = 'border-b border-black px-1 font-semibold text-sm';
+                        cloneInput.parentNode.replaceChild(textSpan, cloneInput);
+                    }
+                });
+
+                // Replace drawing canvas
+                sheet.querySelectorAll('canvas').forEach((canvas, idx) => {
+                    const cloneCanvas = clone.querySelectorAll('canvas')[idx];
+                    if (cloneCanvas) {
+                        if (signaturePad && !signaturePad.isEmpty()) {
+                            const img = document.createElement('img');
+                            img.src = signaturePad.toDataURL();
+                            img.style.width = '240px';
+                            img.style.height = 'auto';
+                            img.style.maxHeight = '60px';
+                            cloneCanvas.parentNode.replaceChild(img, cloneCanvas);
+                        } else {
+                            const emptyLine = document.createElement('div');
+                            emptyLine.className = 'border-b border-black h-12 w-48';
+                            cloneCanvas.parentNode.replaceChild(emptyLine, cloneCanvas);
+                        }
+                    }
+                });
+
+                sheetsContainer.appendChild(clone);
+            });
+
+            return html2pdf().set(opt).from(sheetsContainer).output('blob');
+        }
+
+        // Web3Forms Form Submission
         const form = document.getElementById('interpreter-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const submitBtnTop = document.getElementById('submit-btn-top');
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            isSubmitting = true;
-            
-            alert("To submit your Confidentiality Agreement:\n\n1. In the print dialog, select 'Save as PDF' (and choose where to save the file).\n2. Once saved, close the print preview and your email application will open automatically addressed to our office.\n3. Simply attach the saved PDF to the email and send!");
-            
-            window.print();
-        });
 
-        // Detect when print dialog is closed (or completed) and trigger mail client if submitting
-        window.addEventListener('afterprint', () => {
-            if (isSubmitting) {
-                isSubmitting = false;
+            const interpreterName = document.querySelector('input[name="interpreter_name"]').value || "Unnamed Interpreter";
+
+            // Disable buttons and show loading spinner
+            const loadingText = '<span class="animate-spin w-5 h-5 border-2 border-white/20 border-t-white rounded-full flex-shrink-0"></span> Compiling & Sending...';
+            submitBtn.innerHTML = loadingText;
+            submitBtn.disabled = true;
+            submitBtnTop.innerHTML = loadingText;
+            submitBtnTop.disabled = true;
+
+            // Generate the PDF blob and submit it via Web3Forms FormData
+            generatePDFBlob().then(pdfBlob => {
+                const formData = new FormData();
                 
-                const interpreterName = document.querySelector('input[name="interpreter_name"]').value || "Unnamed Interpreter";
-                const mailtoUrl = `mailto:lifebridgesupport@gmail.com?subject=Completed Interpreter Agreement - ${encodeURIComponent(interpreterName)}&body=Hello,%0D%0A%0D%0APlease find attached my signed Interpreter Confidentiality Agreement PDF which I just saved.`;
+                // Web3Forms Access & Settings
+                formData.append("access_key", "49029e84-1e37-4ff4-b60f-35eaae983ef8");
+                formData.append("subject", `New Interpreter Confidentiality Agreement: ${interpreterName}`);
+                formData.append("from_name", "LifeBridge Support Interpreter Portal");
                 
-                // Open user's email client
-                window.location.href = mailtoUrl;
-            }
+                // Add text fields
+                formData.append("Interpreter Name", interpreterName);
+                formData.append("Date Signed", document.querySelector('input[name="interpreter_date"]').value);
+
+                // Attach PDF file directly
+                formData.append("attachment", pdfBlob, `${interpreterName.replace(/\s+/g, '_')}_Interpreter_Agreement.pdf`);
+
+                return fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+            })
+            .then(async (response) => {
+                if (response.status === 200) {
+                    alert("Interpreter Agreement submitted successfully! The completed forms PDF has been generated and emailed directly to our office. Click OK to save or print a copy for your records.");
+                    window.print();
+                } else {
+                    const json = await response.json();
+                    alert("Submission failed: " + (json.message || "Unknown error"));
+                }
+            })
+            .catch(() => {
+                alert("Something went wrong with the automated email submission. You can still save this agreement as a PDF using the print window!");
+                window.print();
+            })
+            .finally(() => {
+                // Restore button states
+                submitBtn.innerHTML = `
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                    Submit Agreement (Email Attachment)
+                `;
+                submitBtn.disabled = false;
+                submitBtnTop.innerHTML = `
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                    Submit Agreement
+                `;
+                submitBtnTop.disabled = false;
+            });
         });
     </script>
 </body>
