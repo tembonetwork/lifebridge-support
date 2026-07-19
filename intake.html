@@ -86,6 +86,23 @@
             touch-action: none;
         }
 
+        /* Watermark styling */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 5rem;
+            color: rgba(15, 23, 42, 0.03); /* Extremely faint slate on screen */
+            font-weight: 800;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 0;
+            user-select: none;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
         /* Print styles */
         @media print {
             body {
@@ -131,6 +148,11 @@
             .signature-canvas {
                 border: 1px solid black !important;
                 background-color: transparent !important;
+            }
+            .watermark {
+                color: rgba(0, 0, 0, 0.035) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
             /* Keep grid layouts from breaking */
             .grid {
@@ -188,6 +210,7 @@
 
             <!-- ================= PAGE 1: CLIENT INTAKE PACKET ================= -->
             <div class="form-sheet print-page">
+                <div class="watermark select-none pointer-events-none">LifeBridge Support</div>
                 <!-- Header block -->
                 <div class="flex justify-between items-start border-b border-slate-200 pb-6 mb-8">
                     <div class="flex items-center gap-3">
@@ -279,6 +302,7 @@
 
             <!-- ================= PAGE 2: CLIENT CONSENT & AUTHORIZATION ================= -->
             <div class="form-sheet print-page">
+                <div class="watermark select-none pointer-events-none">LifeBridge Support</div>
                 <!-- Header block -->
                 <div class="flex justify-between items-start border-b border-slate-200 pb-6 mb-8">
                     <div class="flex items-center gap-3">
@@ -345,6 +369,7 @@
 
             <!-- ================= PAGE 3: INTERPRETER CONFIDENTIALITY AGREEMENT ================= -->
             <div class="form-sheet print-page">
+                <div class="watermark select-none pointer-events-none">LifeBridge Support</div>
                 <!-- Header block -->
                 <div class="flex justify-between items-start border-b border-slate-200 pb-6 mb-8">
                     <div class="flex items-center gap-3">
@@ -404,6 +429,7 @@
 
             <!-- ================= PAGE 4: AUTHORIZATION OF EXCHANGE OF INFORMATION ================= -->
             <div class="form-sheet print-page">
+                <div class="watermark select-none pointer-events-none">LifeBridge Support</div>
                 <!-- Header block -->
                 <div class="flex justify-between items-start border-b border-slate-200 pb-4 mb-4">
                     <div class="flex items-center gap-3">
@@ -545,7 +571,7 @@
                     <!-- Footer Callout -->
                     <div class="border-t border-slate-200 pt-3 text-center">
                         <p class="text-xs font-semibold text-brand-900 print:text-black">
-                            Please fax completed information to (208) 606-2055 or email to lifebridgesupport@gmail.com
+                            Please email completed information to lifebridgesupport@gmail.com
                         </p>
                     </div>
                 </div>
