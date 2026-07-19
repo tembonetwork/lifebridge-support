@@ -62,9 +62,11 @@
 
         /* Digital Sheet Style for on-screen view */
         .form-sheet {
-            background: white;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255,255,255,0.5) inset;
+            border: 1px solid rgba(255, 255, 255, 0.6);
             padding: 3.5rem 3rem;
             margin-bottom: 3rem;
             border-radius: 1.5rem;
@@ -74,26 +76,42 @@
             margin-right: auto;
             position: relative;
             overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .form-sheet:hover {
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255,255,255,0.8) inset;
+            transform: translateY(-4px);
         }
 
         /* Underline style inputs */
         .underline-input {
             border-bottom: 2px solid #cbd5e1;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.3s ease;
+            background: transparent;
         }
         .underline-input:focus {
             border-color: #335eff;
+            background: rgba(255,255,255,0.8);
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            box-shadow: 0 4px 6px -4px rgba(51, 94, 255, 0.2);
         }
 
         /* Canvas Style */
         .signature-canvas {
-            border: 2px dashed #cbd5e1;
-            background-color: #f8fafc;
+            border: 2px dashed #94a3b8;
+            background-color: rgba(255,255,255,0.6);
+            border-radius: 0.75rem;
             cursor: crosshair;
             touch-action: none;
             position: relative;
             z-index: 10;
+            transition: all 0.3s ease;
+        }
+        .signature-canvas:hover {
+            border-color: #335eff;
+            background-color: rgba(255,255,255,0.95);
         }
 
         /* Watermark Grid styling */
@@ -167,7 +185,7 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen pb-12">
+<body class="bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-50 via-slate-50 to-amber-50 text-slate-800 antialiased min-h-screen pb-12 before:fixed before:inset-0 before:-z-10 before:bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8cGF0aCBkPSJNMCAwTDIgMkgwVjB6TTAgMkgtMloiIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMiIvPgo8L3N2Zz4=')]">
 
     <!-- Sticky Navigation Bar (Screen Only) -->
     <nav class="fixed w-full z-50 glass-nav border-b border-slate-200/55 no-print">
@@ -179,19 +197,19 @@
                 </div>
                 <div class="flex space-x-3 items-center">
                     <a href="index.html" class="text-slate-700 hover:text-brand-600 font-medium transition-colors text-sm px-3 py-2 rounded-lg hover:bg-slate-100">Back to Website</a>
-                    <button type="button" onclick="downloadPDF()" class="bg-brand-50 hover:bg-brand-100 text-brand-700 px-4 py-2 rounded-full font-semibold transition-all flex items-center gap-2 text-sm border border-brand-200">
+                    <button type="button" onclick="downloadPDF()" class="bg-white/80 hover:bg-white text-brand-700 px-4 py-2 rounded-full font-semibold transition-all flex items-center gap-2 text-sm border border-brand-200 shadow-sm hover:shadow-md active:scale-95">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                         </svg>
                         Download PDF
                     </button>
-                    <button type="button" onclick="triggerPrint()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-full font-semibold transition-all flex items-center gap-2 text-sm">
+                    <button type="button" onclick="triggerPrint()" class="bg-white/80 hover:bg-white text-slate-700 px-4 py-2 rounded-full font-semibold transition-all flex items-center gap-2 text-sm border border-slate-200 shadow-sm hover:shadow-md active:scale-95">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                         </svg>
                         Print Form
                     </button>
-                    <button type="submit" form="interpreter-form" id="submit-btn-top" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-full font-semibold transition-all shadow-md flex items-center gap-2 text-sm">
+                    <button type="submit" form="interpreter-form" id="submit-btn-top" class="bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-full font-semibold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 flex items-center gap-2 text-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                         </svg>
@@ -437,6 +455,10 @@
         window.addEventListener('DOMContentLoaded', () => {
             signaturePad = new DrawingPad('interpreter-signature');
             generateCaptcha();
+
+            // Prefill current date
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelector('input[type="date"]').value = today;
         });
 
         function clearSignature() {
@@ -447,11 +469,31 @@
 
         // Print/Save Actions
         function triggerPrint() {
+            const first = document.querySelector('input[name="interpreter_first_name"]').value;
+            const last = document.querySelector('input[name="interpreter_last_name"]').value;
+            const isBlank = !first && !last;
+
+            let originalDate = "";
+            const dateInput = document.querySelector('input[type="date"]');
+            
+            if (isBlank && dateInput) {
+                originalDate = dateInput.value;
+                dateInput.value = "";
+            }
+            
             window.print();
+            
+            if (isBlank && dateInput) {
+                dateInput.value = originalDate;
+            }
         }
 
         // Create clean cloned sheets container for PDF rendering
         function createCleanPDFContainer() {
+            const first = document.querySelector('input[name="interpreter_first_name"]').value;
+            const last = document.querySelector('input[name="interpreter_last_name"]').value;
+            const isBlank = !first && !last;
+
             const sheetsContainer = document.createElement('div');
             sheetsContainer.style.background = '#ffffff';
             sheetsContainer.style.color = '#000000';
@@ -470,8 +512,10 @@
                 sheet.querySelectorAll('input').forEach((input, idx) => {
                     const cloneInput = clone.querySelectorAll('input')[idx];
                     if (cloneInput) {
+                        let val = input.value;
+                        if (isBlank && input.type === 'date') val = "";
                         const textSpan = document.createElement('span');
-                        textSpan.innerHTML = input.value || '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                        textSpan.innerHTML = val || '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                         textSpan.className = 'border-b border-black px-1 font-semibold text-sm';
                         cloneInput.parentNode.replaceChild(textSpan, cloneInput);
                     }
