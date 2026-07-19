@@ -505,9 +505,12 @@
                 clone.style.padding = '20px';
 
                 // Prepare inputs for PDF (Bulletproof flattening for html2canvas/Safari)
-                sheet.querySelectorAll('input').forEach((input, idx) => {
-                    const cloneInput = clone.querySelectorAll('input')[idx];
-                    if (cloneInput) {
+                const originalInputs = Array.from(sheet.querySelectorAll('input'));
+                const clonedInputs = Array.from(clone.querySelectorAll('input'));
+                
+                originalInputs.forEach((input, idx) => {
+                    const cloneInput = clonedInputs[idx];
+                    if (cloneInput && cloneInput.parentNode) {
                         if (input.type === 'checkbox' || input.type === 'radio') {
                             const fakeCheck = document.createElement('span');
                             fakeCheck.innerHTML = input.checked ? '☑' : '☐';
