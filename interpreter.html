@@ -87,14 +87,14 @@
             touch-action: none;
         }
 
-        /* Watermark styling - Slightly more visible */
+        /* Watermark styling - Increased visibility to 8% */
         .watermark {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-30deg);
             font-size: 5rem;
-            color: rgba(15, 23, 42, 0.06); /* Increased visibility (6%) */
+            color: rgba(15, 23, 42, 0.08); /* Increased visibility (8%) */
             font-weight: 800;
             pointer-events: none;
             white-space: nowrap;
@@ -151,7 +151,7 @@
                 background-color: transparent !important;
             }
             .watermark {
-                color: rgba(0, 0, 0, 0.065) !important; /* Increased print watermark visibility (6.5%) */
+                color: rgba(0, 0, 0, 0.085) !important; /* Increased print watermark visibility (8.5%) */
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
@@ -174,7 +174,7 @@
                 </div>
                 <div class="flex space-x-4 items-center">
                     <a href="index.html" class="text-slate-700 hover:text-brand-600 font-medium transition-colors text-sm px-3 py-2 rounded-lg hover:bg-slate-100">Back to Website</a>
-                    <button type="button" onclick="window.print()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-full font-semibold transition-all flex items-center gap-2 text-sm">
+                    <button type="button" onclick="triggerPrintOnly()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-full font-semibold transition-all flex items-center gap-2 text-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                         </svg>
@@ -204,19 +204,11 @@
             </span>
             <h1 class="text-3xl font-bold font-serif text-brand-950 mb-3">Interpreter Confidentiality Agreement</h1>
             <p class="text-slate-600 text-sm leading-relaxed">
-                Please review the terms below, fill in your name, sign digitally, and click **Submit Agreement** to send it directly to our office.
+                Please review the terms below, fill in your name, sign digitally, and click **Submit Agreement** to generate your completed PDF and automatically open your email app to send it to us.
             </p>
         </div>
 
         <form id="interpreter-form">
-            <!-- Web3Forms Config -->
-            <input type="hidden" name="access_key" value="49029e84-1e37-4ff4-b60f-35eaae983ef8">
-            <input type="hidden" name="subject" id="email-subject" value="New Interpreter Confidentiality Agreement Submission">
-            <input type="hidden" name="from_name" value="LifeBridge Support Interpreter Portal">
-            <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
-
-            <!-- Hidden Signature Input -->
-            <input type="hidden" name="interpreter_signature_image" id="interpreter_signature_image">
 
             <!-- ================= INTERPRETER AGREEMENT SHEET ================= -->
             <div class="form-sheet print-page z-10">
@@ -288,15 +280,15 @@
 
             <!-- Submit Panel (Screen Only) -->
             <div class="max-w-md mx-auto mt-8 mb-12 p-8 bg-white border border-slate-200 rounded-[2rem] shadow-lg text-center no-print relative z-10">
-                <h4 class="font-bold text-slate-900 font-serif text-lg mb-2">Ready to Send?</h4>
+                <h4 class="font-bold text-slate-900 font-serif text-lg mb-2">Submit Agreement</h4>
                 <p class="text-xs text-slate-500 mb-6 leading-relaxed">
-                    By submitting, this confidentiality agreement along with your signature will be compiled and sent via email directly to LifeBridge Support.
+                    By submitting, the browser will open the Print/Save window. **Select 'Save as PDF'** to save the completed agreement. Next, your email client will launch automatically so you can attach the PDF and send it to our team.
                 </p>
                 <button type="submit" id="submit-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg hover:shadow-brand-500/20 flex justify-center items-center gap-3 text-base">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                     </svg>
-                    Submit Agreement
+                    Save PDF & Open Email
                 </button>
             </div>
 
@@ -372,10 +364,6 @@
             isEmpty() {
                 return !this.hasContent;
             }
-
-            toDataURL() {
-                return this.canvas.toDataURL();
-            }
         }
 
         // Initialize drawing pad on DOM load
@@ -395,64 +383,36 @@
             }
         }
 
-        // Submit form data to Web3Forms via AJAX
+        // Print/Save Actions
+        let isSubmitting = false;
+
+        function triggerPrintOnly() {
+            isSubmitting = false;
+            window.print();
+        }
+
         const form = document.getElementById('interpreter-form');
-        const submitBtn = document.getElementById('submit-btn');
-        const submitBtnTop = document.getElementById('submit-btn-top');
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
+            isSubmitting = true;
+            
+            alert("To submit your Confidentiality Agreement:\n\n1. In the print dialog, select 'Save as PDF' (and choose where to save the file).\n2. Once saved, close the print preview and your email application will open automatically addressed to our office.\n3. Simply attach the saved PDF to the email and send!");
+            
+            window.print();
+        });
 
-            // Set subject dynamically based on interpreter name
-            const interpreterName = document.querySelector('input[name="interpreter_name"]').value || "Unnamed Interpreter";
-            document.getElementById('email-subject').value = `New Interpreter Agreement: ${interpreterName}`;
-
-            // Convert canvas signature to base64 image and store in hidden field
-            document.getElementById('interpreter_signature_image').value = signaturePad.isEmpty() ? "Not signed" : signaturePad.toDataURL();
-
-            // Change button state
-            const loadingText = '<span class="animate-spin w-5 h-5 border-2 border-white/20 border-t-white rounded-full"></span> Submitting...';
-            submitBtn.innerHTML = loadingText;
-            submitBtn.disabled = true;
-            submitBtnTop.innerHTML = loadingText;
-            submitBtnTop.disabled = true;
-
-            const formData = new FormData(form);
-            const object = Object.fromEntries(formData);
-
-            fetch('https://api.web3forms.com/submit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify(object)
-            })
-            .then(async (response) => {
-                if (response.status === 200) {
-                    alert("Agreement submitted successfully via email to LifeBridge Support! Click OK to open the Print/Save PDF dialog to keep a copy for yourself.");
-                    window.print();
-                } else {
-                    const json = await response.json();
-                    alert("Submission failed: " + (json.message || "Unknown error"));
-                }
-            })
-            .catch(() => {
-                alert("Something went wrong with the email submission. You can still save this agreement as a PDF or print it using the print button at the top!");
-            })
-            .finally(() => {
-                submitBtn.innerHTML = `
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                    </svg>
-                    Submit Agreement
-                `;
-                submitBtn.disabled = false;
-                submitBtnTop.innerHTML = `
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                    </svg>
-                    Submit Agreement
-                `;
-                submitBtnTop.disabled = false;
-            });
+        // Detect when print dialog is closed (or completed) and trigger mail client if submitting
+        window.addEventListener('afterprint', () => {
+            if (isSubmitting) {
+                isSubmitting = false;
+                
+                const interpreterName = document.querySelector('input[name="interpreter_name"]').value || "Unnamed Interpreter";
+                const mailtoUrl = `mailto:lifebridgesupport@gmail.com?subject=Completed Interpreter Agreement - ${encodeURIComponent(interpreterName)}&body=Hello,%0D%0A%0D%0APlease find attached my signed Interpreter Confidentiality Agreement PDF which I just saved.`;
+                
+                // Open user's email client
+                window.location.href = mailtoUrl;
+            }
         });
     </script>
 </body>
