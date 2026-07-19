@@ -453,8 +453,8 @@
         let signaturePad;
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Lock all date inputs strictly to today's date
-            const today = new Date().toLocaleDateString('en-CA'); // 'YYYY-MM-DD' in local timezone
+            // Lock all date inputs strictly to today's date (Universal ISO Format)
+            const today = new Date().toISOString().split('T')[0];
             document.querySelectorAll('input[type="date"]').forEach(el => {
                 el.min = today;
                 el.max = today;
