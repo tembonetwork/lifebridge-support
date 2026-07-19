@@ -796,18 +796,19 @@
                 sheet.querySelectorAll('input').forEach((input, idx) => {
                     const cloneInput = clone.querySelectorAll('input')[idx];
                     if (cloneInput) {
-                        if (input.type === 'checkbox') {
-                            const checkboxSpan = document.createElement('span');
-                            checkboxSpan.innerHTML = input.checked ? '☑' : '☐';
-                            checkboxSpan.className = 'font-bold text-base';
-                            cloneInput.parentNode.replaceChild(checkboxSpan, cloneInput);
+                        if (cloneInput.type === 'checkbox' || cloneInput.type === 'radio') {
+                            cloneInput.checked = input.checked;
                         } else {
-                            let val = input.value;
-                            if (isBlank && input.type === 'date') val = "";
-                            const textSpan = document.createElement('span');
-                            textSpan.innerHTML = val || '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                            textSpan.className = 'border-b border-black px-1 font-semibold text-sm';
-                            cloneInput.parentNode.replaceChild(textSpan, cloneInput);
+                            cloneInput.value = input.value; 
+                            cloneInput.placeholder = ""; 
+                            cloneInput.style.border = 'none';
+                            cloneInput.style.borderBottom = '1px solid black';
+                            cloneInput.style.borderRadius = '0';
+                            cloneInput.style.backgroundColor = 'transparent';
+                            cloneInput.style.color = 'black';
+                            
+                            // Remove focus rings or transition classes that might glitch html2canvas
+                            cloneInput.classList.remove('focus:border-brand-500', 'focus:ring-brand-500', 'transition-colors');
                         }
                     }
                 });

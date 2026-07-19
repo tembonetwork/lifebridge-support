@@ -504,16 +504,23 @@
                 clone.style.margin = '0';
                 clone.style.padding = '20px';
 
-                // Flatten inputs
+                // Prepare inputs for PDF
                 sheet.querySelectorAll('input').forEach((input, idx) => {
                     const cloneInput = clone.querySelectorAll('input')[idx];
                     if (cloneInput) {
-                        let val = input.value;
-                        if (isBlank && input.type === 'date') val = "";
-                        const textSpan = document.createElement('span');
-                        textSpan.innerHTML = val || '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                        textSpan.className = 'border-b border-black px-1 font-semibold text-sm';
-                        cloneInput.parentNode.replaceChild(textSpan, cloneInput);
+                        if (cloneInput.type === 'checkbox' || cloneInput.type === 'radio') {
+                            cloneInput.checked = input.checked;
+                        } else {
+                            cloneInput.value = input.value; 
+                            cloneInput.placeholder = ""; 
+                            cloneInput.style.border = 'none';
+                            cloneInput.style.borderBottom = '1px solid black';
+                            cloneInput.style.borderRadius = '0';
+                            cloneInput.style.backgroundColor = 'transparent';
+                            cloneInput.style.color = 'black';
+                            
+                            cloneInput.classList.remove('focus:border-brand-500', 'focus:ring-brand-500', 'transition-colors');
+                        }
                     }
                 });
 
