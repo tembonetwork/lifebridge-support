@@ -504,22 +504,38 @@
                 clone.style.margin = '0';
                 clone.style.padding = '20px';
 
-                // Prepare inputs for PDF
+                // Prepare inputs for PDF (Bulletproof flattening for html2canvas/Safari)
                 sheet.querySelectorAll('input').forEach((input, idx) => {
                     const cloneInput = clone.querySelectorAll('input')[idx];
                     if (cloneInput) {
-                        if (cloneInput.type === 'checkbox' || cloneInput.type === 'radio') {
-                            cloneInput.checked = input.checked;
+                        if (input.type === 'checkbox' || input.type === 'radio') {
+                            const fakeCheck = document.createElement('span');
+                            fakeCheck.innerHTML = input.checked ? '☑' : '☐';
+                            fakeCheck.style.fontWeight = 'bold';
+                            fakeCheck.style.fontSize = '1.1rem';
+                            fakeCheck.style.marginRight = '8px';
+                            cloneInput.parentNode.replaceChild(fakeCheck, cloneInput);
                         } else {
-                            cloneInput.value = input.value; 
-                            cloneInput.placeholder = ""; 
-                            cloneInput.style.border = 'none';
-                            cloneInput.style.borderBottom = '1px solid black';
-                            cloneInput.style.borderRadius = '0';
-                            cloneInput.style.backgroundColor = 'transparent';
-                            cloneInput.style.color = 'black';
+                            const fakeInput = document.createElement('div');
+                            fakeInput.className = cloneInput.className;
                             
-                            cloneInput.classList.remove('focus:border-brand-500', 'focus:ring-brand-500', 'transition-colors');
+                            // Clean up classes that aren't needed for print
+                            fakeInput.classList.remove('focus:border-brand-500', 'focus:ring-brand-500', 'transition-colors');
+                            
+                            // Force explicit styles for perfect rendering
+                            fakeInput.style.border = 'none';
+                            fakeInput.style.borderBottom = '1px solid black';
+                            fakeInput.style.borderRadius = '0';
+                            fakeInput.style.backgroundColor = 'transparent';
+                            fakeInput.style.color = 'black';
+                            fakeInput.style.minHeight = '1.75rem';
+                            fakeInput.style.display = 'flex';
+                            fakeInput.style.alignItems = 'flex-end';
+                            fakeInput.style.padding = '0 4px';
+                            
+                            fakeInput.innerText = input.value || '';
+                            
+                            cloneInput.parentNode.replaceChild(fakeInput, cloneInput);
                         }
                     }
                 });
