@@ -308,7 +308,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                     </svg>
-                    Submit Agreement (Email Attachment)
+                    Submit Agreement
                 </button>
             </div>
 
@@ -317,6 +317,9 @@
 
     <!-- Canvas Drawing Script -->
     <script>
+        // CONFIG: IF YOU SET UP GOOGLE APPS SCRIPT, PASTE YOUR DEPLOYED WEB APP URL HERE:
+        const GOOGLE_SCRIPT_URL = "";
+
         class DrawingPad {
             constructor(canvasId) {
                 this.canvas = document.getElementById(canvasId);
@@ -494,7 +497,7 @@
             const interpreterName = `${first} ${last}`.trim();
 
             // Disable buttons and show loading spinner
-            const loadingText = '<span class="animate-spin w-5 h-5 border-2 border-white/20 border-t-white rounded-full flex-shrink-0"></span> Compiling & Sending...';
+            const loadingText = '<span class="animate-spin w-5 h-5 border-2 border-white/20 border-t-white rounded-full flex-shrink-0"></span> Submitting...';
             submitBtn.innerHTML = loadingText;
             submitBtn.disabled = true;
             submitBtnTop.innerHTML = loadingText;
@@ -502,57 +505,100 @@
 
             // Generate the PDF blob and submit it via Web3Forms FormData
             generatePDFBlob().then(pdfBlob => {
-                const formData = new FormData();
                 
-                // Web3Forms Access & Settings
-                formData.append("access_key", "49029e84-1e37-4ff4-b60f-35eaae983ef8");
-                formData.append("subject", `New Interpreter Confidentiality Agreement: ${interpreterName}`);
-                formData.append("from_name", "LifeBridge Support Interpreter Portal");
-                
-                // Add text fields
-                formData.append("First Name", first);
-                formData.append("Last Name", last);
-                formData.append("Date Signed", document.querySelector('input[name="interpreter_date"]').value);
+                // MODE A: IF GOOGLE APPS SCRIPT URL IS PROVIDED
+                if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "") {
+                    
+                    const reader = new FileReader();
+                    reader.readAsDataURL(pdfBlob);
+                    reader.onloadend = () => {
+                        const base64data = reader.result.split(',')[1];
+                        
+                        const payload = {
+                            pdf_base64: base64data,
+                            filename: `${interpreterName.replace(/\s+/g, '_')}_Interpreter_Agreement.pdf`,
+                            subject: `New Interpreter Confidentiality Agreement: ${interpreterName}`,
+                            details: `First Name: ${first}\nLast Name: ${last}\nDate Signed: ${document.querySelector('input[name="interpreter_date"]').value}`
+                        };
 
-                // Attach PDF file directly
-                formData.append("attachment", pdfBlob, `${interpreterName.replace(/\s+/g, '_')}_Interpreter_Agreement.pdf`);
-
-                return fetch('https://api.web3forms.com/submit', {
-                    method: 'POST',
-                    body: formData
-                });
-            })
-            .then(async (response) => {
-                if (response.status === 200) {
-                    alert("Interpreter Agreement submitted successfully! The completed forms PDF has been generated and emailed directly to our office. Click OK to save or print a copy for your records.");
-                    window.print();
-                } else {
-                    const json = await response.json();
-                    alert("Submission failed: " + (json.message || "Unknown error"));
+                        fetch(GOOGLE_SCRIPT_URL, {
+                            method: 'POST',
+                            body: JSON.stringify(payload)
+                        })
+                        .then(response => response.json())
+                        .then(json => {
+                            if (json.status === "success") {
+                                alert("Interpreter Agreement submitted successfully! The completed forms PDF has been generated, emailed to our office, and saved securely on our Google Drive. Click OK to save or print a copy for your records.");
+                                window.print();
+                            } else {
+                                alert("Submission via Google Script failed: " + (json.message || "Unknown error"));
+                            }
+                        })
+                        .catch(() => {
+                            alert("Something went wrong with the email submission. You can still save this agreement as a PDF using the print window!");
+                            window.print();
+                        })
+                        .finally(() => {
+                            restoreButtonStates();
+                        });
+                    };
                 }
-            })
-            .catch(() => {
-                alert("Something went wrong with the automated email submission. You can still save this agreement as a PDF using the print window!");
-                window.print();
-            })
-            .finally(() => {
-                // Restore button states
-                submitBtn.innerHTML = `
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                    </svg>
-                    Submit Agreement (Email Attachment)
-                `;
-                submitBtn.disabled = false;
-                submitBtnTop.innerHTML = `
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                    </svg>
-                    Submit Agreement
-                `;
-                submitBtnTop.disabled = false;
+                
+                // MODE B: FALLBACK (Web3Forms Free submission + client-side manual attachment instruction)
+                else {
+                    const formData = new FormData();
+                    
+                    // Web3Forms Access & Settings
+                    formData.append("access_key", "49029e84-1e37-4ff4-b60f-35eaae983ef8");
+                    formData.append("subject", `New Interpreter Confidentiality Agreement: ${interpreterName}`);
+                    formData.append("from_name", "LifeBridge Support Interpreter Portal");
+                    
+                    // Add text fields
+                    formData.append("First Name", first);
+                    formData.append("Last Name", last);
+                    formData.append("Date Signed", document.querySelector('input[name="interpreter_date"]').value);
+                    formData.append("Note", "PDF file is not attached directly because you are using Web3Forms Free tier. A copy of the signed PDF was saved locally by the interpreter.");
+
+                    fetch('https://api.web3forms.com/submit', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(async (response) => {
+                        if (response.status === 200) {
+                            alert("Agreement details submitted successfully!\n\nTo complete your submission:\n1. Click OK to open the Print Window.\n2. Choose 'Save as PDF' to save the completed agreement to your device.\n3. Email the saved PDF to lifebridgesupport@gmail.com.");
+                            window.print();
+                        } else {
+                            const json = await response.json();
+                            alert("Submission failed: " + (json.message || "Unknown error"));
+                        }
+                    })
+                    .catch(() => {
+                        alert("Something went wrong with the automated email submission. You can still save this agreement as a PDF using the print window!");
+                        window.print();
+                    })
+                    .finally(() => {
+                        restoreButtonStates();
+                    });
+                }
             });
         });
+
+        function restoreButtonStates() {
+            submitBtn.innerHTML = `
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                </svg>
+                Submit Agreement
+            `;
+            submitBtn.disabled = false;
+            submitBtnTop.innerHTML = `
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                </svg>
+                Submit Agreement
+            `;
+            submitBtnTop.disabled = false;
+        }
     </script>
 </body>
 </html>

@@ -580,7 +580,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                     </svg>
-                    Submit Packet (Email Attachment)
+                    Submit Packet
                 </button>
             </div>
 
@@ -589,6 +589,9 @@
 
     <!-- Canvas Drawing Script -->
     <script>
+        // CONFIG: IF YOU SET UP GOOGLE APPS SCRIPT, PASTE YOUR DEPLOYED WEB APP URL HERE:
+        const GOOGLE_SCRIPT_URL = "";
+
         class DrawingPad {
             constructor(canvasId) {
                 this.canvas = document.getElementById(canvasId);
@@ -777,7 +780,7 @@
             return html2pdf().set(opt).from(sheetsContainer).output('blob');
         }
 
-        // Web3Forms Form Submission
+        // Form Submission Router (Caters for Free Web3Forms vs Direct Google Script Web App)
         const form = document.getElementById('intake-packet-form');
         const submitBtn = document.getElementById('submit-btn');
         const submitBtnTop = document.getElementById('submit-btn-top');
@@ -812,81 +815,120 @@
             const clientName = `${first} ${last}`.trim();
 
             // Disable buttons and show loading spinner
-            const loadingText = '<span class="animate-spin w-5 h-5 border-2 border-white/20 border-t-white rounded-full flex-shrink-0"></span> Compiling & Sending...';
+            const loadingText = '<span class="animate-spin w-5 h-5 border-2 border-white/20 border-t-white rounded-full flex-shrink-0"></span> Submitting...';
             submitBtn.innerHTML = loadingText;
             submitBtn.disabled = true;
             submitBtnTop.innerHTML = loadingText;
             submitBtnTop.disabled = true;
 
-            // Generate the PDF blob and submit it via Web3Forms FormData
+            // Generate PDF Blob
             generatePDFBlob().then(pdfBlob => {
-                const formData = new FormData();
+
+                // MODE A: IF GOOGLE APPS SCRIPT URL IS PROVIDED (100% Free Automated Attachment)
+                if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "") {
+                    
+                    // Convert PDF blob to base64 string
+                    const reader = new FileReader();
+                    reader.readAsDataURL(pdfBlob);
+                    reader.onloadend = () => {
+                        const base64data = reader.result.split(',')[1];
+                        
+                        const payload = {
+                            pdf_base64: base64data,
+                            filename: `${clientName.replace(/\s+/g, '_')}_Intake_Packet.pdf`,
+                            subject: `New Client Intake Packet: ${clientName}`,
+                            details: `First Name: ${first}\nLast Name: ${last}\nDOB: ${document.querySelector('input[name="client_dob"]').value}\nAddress: ${document.querySelector('input[name="client_address"]').value}\nPhone: ${document.querySelector('input[name="client_phone"]').value}\nEmail: ${document.querySelector('input[name="client_email"]').value}`
+                        };
+
+                        fetch(GOOGLE_SCRIPT_URL, {
+                            method: 'POST',
+                            body: JSON.stringify(payload)
+                        })
+                        .then(response => response.json())
+                        .then(json => {
+                            if (json.status === "success") {
+                                alert("Intake Packet submitted successfully! The completed forms PDF has been generated, emailed to our office, and saved securely on our Google Drive. Click OK to save or print a copy for your records.");
+                                window.print();
+                            } else {
+                                alert("Submission via Google Script failed: " + (json.message || "Unknown error"));
+                            }
+                        })
+                        .catch(() => {
+                            alert("Something went wrong with the email submission. You can still save this packet as a PDF using the print window!");
+                            window.print();
+                        })
+                        .finally(() => {
+                            restoreButtonStates();
+                        });
+                    };
+                } 
                 
-                // Web3Forms Access & Settings
-                formData.append("access_key", "49029e84-1e37-4ff4-b60f-35eaae983ef8");
-                formData.append("subject", `New Client Intake Packet: ${clientName}`);
-                formData.append("from_name", "LifeBridge Support Client Portal");
-                
-                // Add text fields
-                formData.append("First Name", first);
-                formData.append("Last Name", last);
-                formData.append("DOB", document.querySelector('input[name="client_dob"]').value);
-                formData.append("Address", document.querySelector('input[name="client_address"]').value);
-                formData.append("Phone", document.querySelector('input[name="client_phone"]').value);
-                formData.append("Email", document.querySelector('input[name="client_email"]').value);
-                formData.append("Emergency Contact", document.querySelector('input[name="client_emergency"]').value);
+                // MODE B: FALLBACK (Web3Forms Free submission + client-side manual attachment instruction)
+                else {
+                    const formData = new FormData();
+                    
+                    // Web3Forms Access & Settings
+                    formData.append("access_key", "49029e84-1e37-4ff4-b60f-35eaae983ef8");
+                    formData.append("subject", `New Client Intake Packet: ${clientName}`);
+                    formData.append("from_name", "LifeBridge Support Client Portal");
+                    
+                    // Add text fields (DO NOT attach files here on Free Tier to avoid errors!)
+                    formData.append("First Name", first);
+                    formData.append("Last Name", last);
+                    formData.append("DOB", document.querySelector('input[name="client_dob"]').value);
+                    formData.append("Address", document.querySelector('input[name="client_address"]').value);
+                    formData.append("Phone", document.querySelector('input[name="client_phone"]').value);
+                    formData.append("Email", document.querySelector('input[name="client_email"]').value);
+                    formData.append("Emergency Contact", document.querySelector('input[name="client_emergency"]').value);
 
-                // Collect checkbox services
-                const checkedServices = [];
-                document.querySelectorAll('input[name="services"]:checked').forEach(cb => {
-                    checkedServices.push(cb.parentNode.textContent.trim());
-                });
-                formData.append("Requested Services", checkedServices.join(', ') || "None selected");
+                    // Collect checkbox services
+                    const checkedServices = [];
+                    document.querySelectorAll('input[name="services"]:checked').forEach(cb => {
+                        checkedServices.push(cb.parentNode.textContent.trim());
+                    });
+                    formData.append("Requested Services", checkedServices.join(', ') || "None selected");
+                    formData.append("Note", "PDF file is not attached directly because you are using Web3Forms Free tier. A copy of the signed PDF was saved locally by the client.");
 
-                // Target Exchange details
-                formData.append("Exchange Provider/Org", document.querySelector('input[name="exchange_target_name"]').value);
-                formData.append("Exchange Address", document.querySelector('input[name="exchange_target_address"]').value);
-                formData.append("Exchange Phone/Email", document.querySelector('input[name="exchange_target_contact"]').value);
-
-                // Attach PDF file directly
-                formData.append("attachment", pdfBlob, `${clientName.replace(/\s+/g, '_')}_Intake_Packet.pdf`);
-
-                return fetch('https://api.web3forms.com/submit', {
-                    method: 'POST',
-                    body: formData
-                });
-            })
-            .then(async (response) => {
-                if (response.status === 200) {
-                    alert("Intake Packet submitted successfully! The completed forms PDF has been generated and emailed directly to our office. Click OK to save or print a copy for your records.");
-                    window.print();
-                } else {
-                    const json = await response.json();
-                    alert("Submission failed: " + (json.message || "Unknown error"));
+                    fetch('https://api.web3forms.com/submit', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(async (response) => {
+                        if (response.status === 200) {
+                            alert("Client details submitted successfully!\n\nTo complete your submission:\n1. Click OK to open the Print Window.\n2. Choose 'Save as PDF' to save the completed packet to your device.\n3. Email the saved PDF to lifebridgesupport@gmail.com.");
+                            window.print();
+                        } else {
+                            const json = await response.json();
+                            alert("Submission failed: " + (json.message || "Unknown error"));
+                        }
+                    })
+                    .catch(() => {
+                        alert("Something went wrong with the form submission. You can still save this packet as a PDF using the print window!");
+                        window.print();
+                    })
+                    .finally(() => {
+                        restoreButtonStates();
+                    });
                 }
-            })
-            .catch(() => {
-                alert("Something went wrong with the automated email submission. You can still save this packet as a PDF using the print window!");
-                window.print();
-            })
-            .finally(() => {
-                // Restore button states
-                submitBtn.innerHTML = `
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                    </svg>
-                    Submit Packet (Email Attachment)
-                `;
-                submitBtn.disabled = false;
-                submitBtnTop.innerHTML = `
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                    </svg>
-                    Submit Packet
-                `;
-                submitBtnTop.disabled = false;
             });
         });
+
+        function restoreButtonStates() {
+            submitBtn.innerHTML = `
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                </svg>
+                Submit Packet
+            `;
+            submitBtn.disabled = false;
+            submitBtnTop.innerHTML = `
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                </svg>
+                Submit Packet
+            `;
+            submitBtnTop.disabled = false;
+        }
     </script>
 </body>
 </html>
