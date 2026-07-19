@@ -147,11 +147,6 @@
                 border: 1px solid black !important;
                 background-color: transparent !important;
             }
-            .watermark {
-                color: rgba(0, 0, 0, 0.085) !important; /* Increased print watermark visibility (8.5%) */
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
             /* Keep grid layouts from breaking */
             .grid {
                 display: grid !important;
@@ -244,15 +239,21 @@
 
                 <!-- Fields -->
                 <div class="space-y-6 relative z-10">
-                    <div class="flex flex-col md:flex-row md:items-end gap-4">
-                        <label class="font-semibold text-slate-700 text-sm min-w-[160px]">Interpreter Name:</label>
-                        <input type="text" name="interpreter_name" required class="flex-grow underline-input text-slate-800 py-1 bg-transparent" placeholder="Interpreter full name">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex flex-col md:flex-row md:items-end gap-4">
+                            <label class="font-semibold text-slate-700 text-sm min-w-[100px]">First Name:</label>
+                            <input type="text" name="interpreter_first_name" required class="flex-grow underline-input text-slate-800 py-1 bg-transparent" placeholder="First name">
+                        </div>
+                        <div class="flex flex-col md:flex-row md:items-end gap-4">
+                            <label class="font-semibold text-slate-700 text-sm min-w-[100px]">Last Name:</label>
+                            <input type="text" name="interpreter_last_name" required class="flex-grow underline-input text-slate-800 py-1 bg-transparent" placeholder="Last name">
+                        </div>
                     </div>
 
                     <!-- Interpreter Signature Pad -->
                     <div class="flex flex-col gap-2 mt-4">
                         <div class="flex justify-between items-center no-print">
-                            <label class="font-semibold text-slate-700 text-sm">Interpreter Signature (Draw below):</label>
+                            <label class="font-semibold text-slate-700 text-sm">Interpreter Signature (Draw below): <span class="text-red-500">*Required</span></label>
                             <button type="button" onclick="clearSignature()" class="text-xs text-red-500 hover:text-red-700 transition-colors">Clear</button>
                         </div>
                         <label class="hidden print:block font-semibold text-slate-700 text-sm">Interpreter Signature:</label>
@@ -389,7 +390,9 @@
 
         // Generate PDF Blob using html2pdf.js
         function generatePDFBlob() {
-            const interpreterName = document.querySelector('input[name="interpreter_name"]').value || "Interpreter";
+            const first = document.querySelector('input[name="interpreter_first_name"]').value || "";
+            const last = document.querySelector('input[name="interpreter_last_name"]').value || "";
+            const interpreterName = `${first} ${last}`.trim() || "Interpreter";
             const opt = {
                 margin:       10, // mm margins
                 filename:     `${interpreterName.replace(/\s+/g, '_')}_Interpreter_Agreement.pdf`,
@@ -455,7 +458,16 @@
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const interpreterName = document.querySelector('input[name="interpreter_name"]').value || "Unnamed Interpreter";
+            // Validate that the interpreter signature pad is not empty
+            if (signaturePad.isEmpty()) {
+                alert("Please sign the Interpreter Signature field before submitting.");
+                document.getElementById('interpreter-signature').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            const first = document.querySelector('input[name="interpreter_first_name"]').value || "";
+            const last = document.querySelector('input[name="interpreter_last_name"]').value || "";
+            const interpreterName = `${first} ${last}`.trim();
 
             // Disable buttons and show loading spinner
             const loadingText = '<span class="animate-spin w-5 h-5 border-2 border-white/20 border-t-white rounded-full flex-shrink-0"></span> Compiling & Sending...';
@@ -474,7 +486,8 @@
                 formData.append("from_name", "LifeBridge Support Interpreter Portal");
                 
                 // Add text fields
-                formData.append("Interpreter Name", interpreterName);
+                formData.append("First Name", first);
+                formData.append("Last Name", last);
                 formData.append("Date Signed", document.querySelector('input[name="interpreter_date"]').value);
 
                 // Attach PDF file directly

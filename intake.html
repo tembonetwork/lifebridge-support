@@ -147,6 +147,11 @@
                 border: 1px solid black !important;
                 background-color: transparent !important;
             }
+            .watermark {
+                color: rgba(0, 0, 0, 0.085) !important; /* Increased print watermark visibility (8.5%) */
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
             /* Keep grid layouts from breaking */
             .grid {
                 display: grid !important;
@@ -230,9 +235,15 @@
 
                 <!-- Fields -->
                 <div class="space-y-6 relative z-10">
-                    <div class="flex flex-col md:flex-row md:items-end gap-4">
-                        <label class="font-semibold text-slate-700 text-sm min-w-[120px]">Client Name:</label>
-                        <input type="text" name="client_name" required class="flex-grow underline-input text-slate-800 py-1 bg-transparent" placeholder="Enter full name" oninput="syncClientName(this.value)">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex flex-col md:flex-row md:items-end gap-4">
+                            <label class="font-semibold text-slate-700 text-sm min-w-[100px]">First Name:</label>
+                            <input type="text" name="client_first_name" required class="flex-grow underline-input text-slate-800 py-1 bg-transparent" placeholder="First name" oninput="syncClientName()">
+                        </div>
+                        <div class="flex flex-col md:flex-row md:items-end gap-4">
+                            <label class="font-semibold text-slate-700 text-sm min-w-[100px]">Last Name:</label>
+                            <input type="text" name="client_last_name" required class="flex-grow underline-input text-slate-800 py-1 bg-transparent" placeholder="Last name" oninput="syncClientName()">
+                        </div>
                     </div>
 
                     <div class="flex flex-col md:flex-row md:items-end gap-4">
@@ -329,13 +340,13 @@
                 <div class="space-y-6 relative z-10">
                     <div class="flex flex-col md:flex-row md:items-end gap-4">
                         <label class="font-semibold text-slate-700 text-sm min-w-[160px]">Client/Guardian Name:</label>
-                        <input type="text" name="consent_client_name" required class="flex-grow underline-input text-slate-800 py-1 bg-transparent synced-client-name" placeholder="Full name">
+                        <input type="text" name="consent_client_name" required readonly class="flex-grow underline-input text-slate-800 py-1 bg-transparent synced-client-name" placeholder="Full name (fills automatically)">
                     </div>
 
                     <!-- Client Signature Pad -->
                     <div class="flex flex-col gap-2 mt-4">
                         <div class="flex justify-between items-center no-print">
-                            <label class="font-semibold text-slate-700 text-sm">Client Signature (Draw below):</label>
+                            <label class="font-semibold text-slate-700 text-sm">Client Signature (Draw below): <span class="text-red-500">*Required</span></label>
                             <button type="button" onclick="clearSignature('client-signature')" class="text-xs text-red-500 hover:text-red-700 transition-colors">Clear</button>
                         </div>
                         <label class="hidden print:block font-semibold text-slate-700 text-sm">Client Signature:</label>
@@ -350,7 +361,7 @@
                     <!-- Staff Witness Signature Pad -->
                     <div class="flex flex-col gap-2 mt-4">
                         <div class="flex justify-between items-center no-print">
-                            <label class="font-semibold text-slate-700 text-sm">Staff Witness Signature (Draw below):</label>
+                            <label class="font-semibold text-slate-700 text-sm">Staff Witness Signature (Draw below): <span class="text-red-500">*Required</span></label>
                             <button type="button" onclick="clearSignature('staff-signature')" class="text-xs text-red-500 hover:text-red-700 transition-colors">Clear</button>
                         </div>
                         <label class="hidden print:block font-semibold text-slate-700 text-sm">Staff Witness:</label>
@@ -387,7 +398,7 @@
                 <div class="space-y-4 text-sm relative z-10">
                     <div class="flex flex-wrap items-end gap-2">
                         <span>I,</span>
-                        <input type="text" name="exchange_client_name" required class="w-48 underline-input text-slate-800 bg-transparent px-1 font-semibold synced-client-name" placeholder="Client Name">
+                        <input type="text" name="exchange_client_name" required readonly class="w-48 underline-input text-slate-800 bg-transparent px-1 font-semibold synced-client-name" placeholder="Client Name (fills automatically)">
                         <span>authorize LifeBridge Support, LLC to exchange information with:</span>
                     </div>
 
@@ -395,15 +406,15 @@
                     <div class="border border-slate-200 rounded-xl p-4 space-y-3 bg-slate-50/50 print:border-black print:bg-transparent print:p-0 print:border-none">
                         <div class="flex flex-col md:flex-row md:items-end gap-2">
                             <label class="text-xs font-semibold text-slate-600 min-w-[120px]">Name of Provider/Org:</label>
-                            <input type="text" name="exchange_target_name" required class="flex-grow underline-input text-slate-800 bg-transparent text-xs py-0.5">
+                            <input type="text" name="exchange_target_name" required class="flex-grow underline-input text-slate-800 bg-transparent text-xs py-0.5" placeholder="Recipient Organization/Doctor name">
                         </div>
                         <div class="flex flex-col md:flex-row md:items-end gap-2">
                             <label class="text-xs font-semibold text-slate-600 min-w-[120px]">Address of Org:</label>
-                            <input type="text" name="exchange_target_address" required class="flex-grow underline-input text-slate-800 bg-transparent text-xs py-0.5">
+                            <input type="text" name="exchange_target_address" required class="flex-grow underline-input text-slate-800 bg-transparent text-xs py-0.5" placeholder="Address">
                         </div>
                         <div class="flex flex-col md:flex-row md:items-end gap-2">
                             <label class="text-xs font-semibold text-slate-600 min-w-[120px]">Phone/Email:</label>
-                            <input type="text" name="exchange_target_contact" required class="flex-grow underline-input text-slate-800 bg-transparent text-xs py-0.5">
+                            <input type="text" name="exchange_target_contact" required class="flex-grow underline-input text-slate-800 bg-transparent text-xs py-0.5" placeholder="Contact number/Email">
                         </div>
                     </div>
 
@@ -471,7 +482,7 @@
                         <div class="space-y-4">
                             <div class="flex flex-col gap-1">
                                 <div class="flex justify-between items-center no-print">
-                                    <label class="text-xs font-semibold text-slate-700">Client Signature (Draw below):</label>
+                                    <label class="text-xs font-semibold text-slate-700">Client Signature (Draw below): <span class="text-red-500">*Required</span></label>
                                     <button type="button" onclick="clearSignature('exchange-client-signature')" class="text-[10px] text-red-500 hover:text-red-700">Clear</button>
                                 </div>
                                 <label class="hidden print:block text-xs font-semibold text-slate-700">Signature of Authorizing Client:</label>
@@ -486,7 +497,7 @@
                         <div class="space-y-4">
                             <div class="flex flex-col gap-1">
                                 <div class="flex justify-between items-center no-print">
-                                    <label class="text-xs font-semibold text-slate-700">Provider Signature (Draw below):</label>
+                                    <label class="text-xs font-semibold text-slate-700">Provider Signature (Draw below): <span class="text-red-500">*Required</span></label>
                                     <button type="button" onclick="clearSignature('exchange-provider-signature')" class="text-[10px] text-red-500 hover:text-red-700">Clear</button>
                                 </div>
                                 <label class="hidden print:block text-xs font-semibold text-slate-700">Signature and Position of Service Provider:</label>
@@ -623,9 +634,12 @@
         }
 
         // Sync client name between forms for speed of entry
-        function syncClientName(val) {
+        function syncClientName() {
+            const first = document.querySelector('input[name="client_first_name"]').value || "";
+            const last = document.querySelector('input[name="client_last_name"]').value || "";
+            const fullName = `${first} ${last}`.trim();
             document.querySelectorAll('.synced-client-name').forEach(input => {
-                input.value = val;
+                input.value = fullName;
             });
         }
 
@@ -636,7 +650,9 @@
 
         // Generate PDF Blob using html2pdf.js
         function generatePDFBlob() {
-            const clientName = document.querySelector('input[name="client_name"]').value || "Client";
+            const first = document.querySelector('input[name="client_first_name"]').value || "";
+            const last = document.querySelector('input[name="client_last_name"]').value || "";
+            const clientName = `${first} ${last}`.trim() || "Client";
             const opt = {
                 margin:       10, // mm margins
                 filename:     `${clientName.replace(/\s+/g, '_')}_Intake_Packet.pdf`,
@@ -718,7 +734,31 @@
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const clientName = document.querySelector('input[name="client_name"]').value || "Unnamed Client";
+            // Validate electronic drawing signatures before proceeding
+            if (signaturePads['client-signature'].isEmpty()) {
+                alert("Please complete the Client/Guardian Signature on Page 2.");
+                document.getElementById('client-signature').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            if (signaturePads['staff-signature'].isEmpty()) {
+                alert("Please complete the Staff Witness Signature on Page 2.");
+                document.getElementById('staff-signature').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            if (signaturePads['exchange-client-signature'].isEmpty()) {
+                alert("Please complete the Authorizing Client Signature on Page 3.");
+                document.getElementById('exchange-client-signature').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            if (signaturePads['exchange-provider-signature'].isEmpty()) {
+                alert("Please complete the Service Provider Signature on Page 3.");
+                document.getElementById('exchange-provider-signature').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            const first = document.querySelector('input[name="client_first_name"]').value || "";
+            const last = document.querySelector('input[name="client_last_name"]').value || "";
+            const clientName = `${first} ${last}`.trim();
 
             // Disable buttons and show loading spinner
             const loadingText = '<span class="animate-spin w-5 h-5 border-2 border-white/20 border-t-white rounded-full flex-shrink-0"></span> Compiling & Sending...';
@@ -737,7 +777,8 @@
                 formData.append("from_name", "LifeBridge Support Client Portal");
                 
                 // Add text fields
-                formData.append("Client Name", clientName);
+                formData.append("First Name", first);
+                formData.append("Last Name", last);
                 formData.append("DOB", document.querySelector('input[name="client_dob"]').value);
                 formData.append("Address", document.querySelector('input[name="client_address"]').value);
                 formData.append("Phone", document.querySelector('input[name="client_phone"]').value);
