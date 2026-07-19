@@ -319,7 +319,7 @@
 
                     <div class="flex flex-col md:flex-row md:items-end gap-4">
                         <label class="font-semibold text-slate-700 text-sm min-w-[160px]">Date:</label>
-                        <input type="date" name="interpreter_date" required class="flex-grow underline-input text-slate-800 py-1 bg-transparent">
+                        <input type="text" onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'" name="interpreter_date" required class="flex-grow underline-input text-slate-800 py-1 bg-transparent">
                     </div>
                 </div>
 
@@ -455,10 +455,6 @@
         window.addEventListener('DOMContentLoaded', () => {
             signaturePad = new DrawingPad('interpreter-signature');
             generateCaptcha();
-
-            // Prefill current date
-            const today = new Date().toISOString().split('T')[0];
-            document.querySelector('input[type="date"]').value = today;
         });
 
         function clearSignature() {
