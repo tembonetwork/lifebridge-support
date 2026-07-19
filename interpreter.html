@@ -177,13 +177,19 @@
                     <img src="logo.png" alt="LifeBridge Support Logo" class="h-10 w-10 rounded-full object-cover shadow-sm border-2 border-brand-500/20">
                     <span class="font-bold text-xl font-serif tracking-tight text-brand-950">LifeBridge Support</span>
                 </div>
-                <div class="flex space-x-4 items-center">
+                <div class="flex space-x-3 items-center">
                     <a href="index.html" class="text-slate-700 hover:text-brand-600 font-medium transition-colors text-sm px-3 py-2 rounded-lg hover:bg-slate-100">Back to Website</a>
+                    <button type="button" onclick="downloadPDF()" class="bg-brand-50 hover:bg-brand-100 text-brand-700 px-4 py-2 rounded-full font-semibold transition-all flex items-center gap-2 text-sm border border-brand-200">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Download PDF
+                    </button>
                     <button type="button" onclick="triggerPrint()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-full font-semibold transition-all flex items-center gap-2 text-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                         </svg>
-                        Print/Save PDF
+                        Print Form
                     </button>
                     <button type="submit" form="interpreter-form" id="submit-btn-top" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-full font-semibold transition-all shadow-md flex items-center gap-2 text-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -448,25 +454,15 @@
             window.print();
         }
 
-        // Generate PDF Blob using html2pdf.js
-        function generatePDFBlob() {
-            const first = document.querySelector('input[name="interpreter_first_name"]').value || "";
-            const last = document.querySelector('input[name="interpreter_last_name"]').value || "";
-            const interpreterName = `${first} ${last}`.trim() || "Interpreter";
-            const opt = {
-                margin:       10, // mm margins
-                filename:     `${interpreterName.replace(/\s+/g, '_')}_Interpreter_Agreement.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
-                jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
-            };
-
+        // Create clean cloned sheets container for PDF rendering
+        function createCleanPDFContainer() {
             const sheetsContainer = document.createElement('div');
             sheetsContainer.style.background = '#ffffff';
             sheetsContainer.style.color = '#000000';
             sheetsContainer.style.width = '100%';
             
-            document.querySelectorAll('.form-sheet').forEach(sheet => {
+            const sheets = document.querySelectorAll('.form-sheet');
+            sheets.forEach((sheet, sheetIdx) => {
                 const clone = sheet.cloneNode(true);
                 
                 clone.style.boxShadow = 'none';
@@ -505,9 +501,48 @@
                 });
 
                 sheetsContainer.appendChild(clone);
+                
+                if (sheetIdx < sheets.length - 1) {
+                    const pageBreak = document.createElement('div');
+                    pageBreak.style.pageBreakAfter = 'always';
+                    sheetsContainer.appendChild(pageBreak);
+                }
             });
+            return sheetsContainer;
+        }
 
+        // Generate PDF Blob using html2pdf.js
+        function generatePDFBlob() {
+            const first = document.querySelector('input[name="interpreter_first_name"]').value || "";
+            const last = document.querySelector('input[name="interpreter_last_name"]').value || "";
+            const interpreterName = `${first} ${last}`.trim() || "Interpreter";
+            const opt = {
+                margin:       10, // mm margins
+                filename:     `${interpreterName.replace(/\s+/g, '_')}_Interpreter_Agreement.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
+            };
+
+            const sheetsContainer = createCleanPDFContainer();
             return html2pdf().set(opt).from(sheetsContainer).output('blob');
+        }
+
+        // Direct PDF download using html2pdf.js
+        function downloadPDF() {
+            const first = document.querySelector('input[name="interpreter_first_name"]').value || "";
+            const last = document.querySelector('input[name="interpreter_last_name"]').value || "";
+            const interpreterName = `${first} ${last}`.trim() || "LifeBridge_Interpreter_Blank";
+            const opt = {
+                margin:       10, // mm margins
+                filename:     `${interpreterName.replace(/\s+/g, '_')}_Interpreter_Agreement.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
+            };
+
+            const sheetsContainer = createCleanPDFContainer();
+            html2pdf().set(opt).from(sheetsContainer).save();
         }
 
         // Web3Forms Form Submission
@@ -576,15 +611,15 @@
                         .then(response => response.json())
                         .then(json => {
                             if (json.status === "success") {
-                                alert("Interpreter Agreement submitted successfully! The completed forms PDF has been generated, emailed to our office, and saved securely on our Google Drive. Click OK to save or print a copy for your records.");
-                                window.print();
+                                alert("Interpreter Agreement submitted successfully! The completed forms PDF has been emailed to our office, saved on Google Drive, and downloaded to your computer.");
+                                downloadPDF();
                             } else {
                                 alert("Submission via Google Script failed: " + (json.message || "Unknown error"));
                             }
                         })
                         .catch(() => {
-                            alert("Something went wrong with the email submission. You can still save this agreement as a PDF using the print window!");
-                            window.print();
+                            alert("Something went wrong with the email submission. You can still download this agreement as a PDF by clicking OK!");
+                            downloadPDF();
                         })
                         .finally(() => {
                             restoreButtonStates();
@@ -613,16 +648,16 @@
                     })
                     .then(async (response) => {
                         if (response.status === 200) {
-                            alert("Agreement details submitted successfully!\n\nTo complete your submission:\n1. Click OK to open the Print Window.\n2. Choose 'Save as PDF' to save the completed agreement to your device.\n3. Email the saved PDF to lifebridgesupport@gmail.com.");
-                            window.print();
+                            alert("Agreement details submitted successfully!\n\nTo complete your submission:\n1. The completed PDF is now downloading to your device.\n2. Please email that downloaded PDF to lifebridgesupport@gmail.com.");
+                            downloadPDF();
                         } else {
                             const json = await response.json();
                             alert("Submission failed: " + (json.message || "Unknown error"));
                         }
                     })
                     .catch(() => {
-                        alert("Something went wrong with the automated email submission. You can still save this agreement as a PDF using the print window!");
-                        window.print();
+                        alert("Something went wrong with the automated email submission. You can still download this agreement as a PDF by clicking OK!");
+                        downloadPDF();
                     })
                     .finally(() => {
                         restoreButtonStates();
