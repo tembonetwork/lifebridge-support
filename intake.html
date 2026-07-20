@@ -412,29 +412,37 @@
                         <input type="text" name="consent_client_name" required readonly class="flex-grow underline-input text-slate-800 py-1 bg-transparent synced-client-name" placeholder="Full name (fills automatically)">
                     </div>
 
-                    <!-- Client Signature Pad -->
-                    <div class="flex flex-col gap-2 mt-4">
-                        <div class="flex justify-between items-center no-print">
-                            <label class="font-semibold text-slate-700 text-sm">Client Signature (Draw below): <span class="text-red-500">*Required</span></label>
-                            <button type="button" onclick="clearSignature('client-signature')" class="text-xs text-red-500 hover:text-red-700 transition-colors">Clear</button>
+                    <!-- Page 2 Signatures & Dates in side-by-side Layout -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
+                        <div class="space-y-4">
+                            <div class="flex flex-col gap-1">
+                                <div class="flex justify-between items-center no-print">
+                                    <label class="font-semibold text-slate-700 text-sm">Client Signature (Draw below): <span class="text-red-500">*Required</span></label>
+                                    <button type="button" onclick="clearSignature('client-signature')" class="text-xs text-red-500 hover:text-red-700 transition-colors">Clear</button>
+                                </div>
+                                <label class="hidden print:block font-semibold text-slate-700 text-sm">Client/Guardian Signature:</label>
+                                <canvas id="client-signature" class="signature-canvas w-full h-24 rounded-lg" width="400" height="100"></canvas>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <label class="font-semibold text-slate-700 text-sm min-w-[50px]">Date:</label>
+                                <input type="date" name="consent_date" required class="flex-grow underline-input text-slate-800 py-1 bg-transparent">
+                            </div>
                         </div>
-                        <label class="hidden print:block font-semibold text-slate-700 text-sm">Client Signature:</label>
-                        <canvas id="client-signature" class="signature-canvas w-full h-32 rounded-xl" width="600" height="150"></canvas>
-                    </div>
 
-                    <div class="flex flex-col md:flex-row md:items-end gap-4">
-                        <label class="font-semibold text-slate-700 text-sm min-w-[160px]">Date:</label>
-                        <input type="date" name="consent_date" required class="flex-grow underline-input text-slate-800 py-1 bg-transparent">
-                    </div>
-
-                    <!-- Staff Witness Signature Pad -->
-                    <div class="flex flex-col gap-2 mt-4">
-                        <div class="flex justify-between items-center no-print">
-                            <label class="font-semibold text-slate-700 text-sm">Staff Witness Signature (Draw below): <span class="text-red-500">*Required</span></label>
-                            <button type="button" onclick="clearSignature('staff-signature')" class="text-xs text-red-500 hover:text-red-700 transition-colors">Clear</button>
+                        <div class="space-y-4">
+                            <div class="flex flex-col gap-1">
+                                <div class="flex justify-between items-center no-print">
+                                    <label class="font-semibold text-slate-700 text-sm">Staff Witness Signature (Draw below): <span class="text-red-500">*Required</span></label>
+                                    <button type="button" onclick="clearSignature('staff-signature')" class="text-xs text-red-500 hover:text-red-700 transition-colors">Clear</button>
+                                </div>
+                                <label class="hidden print:block font-semibold text-slate-700 text-sm">Staff Witness Signature:</label>
+                                <canvas id="staff-signature" class="signature-canvas w-full h-24 rounded-lg" width="400" height="100"></canvas>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <label class="font-semibold text-slate-700 text-sm min-w-[50px]">Date:</label>
+                                <input type="date" name="staff_date" required class="flex-grow underline-input text-slate-800 py-1 bg-transparent">
+                            </div>
                         </div>
-                        <label class="hidden print:block font-semibold text-slate-700 text-sm">Staff Witness:</label>
-                        <canvas id="staff-signature" class="signature-canvas w-full h-32 rounded-xl" width="600" height="150"></canvas>
                     </div>
                 </div>
             </div>
