@@ -913,18 +913,26 @@
             document.body.appendChild(overlay);
 
             const sheetsContainer = createCleanPDFContainer();
-            sheetsContainer.style.width = '800px';
+            sheetsContainer.style.width = '720px';
             sheetsContainer.style.margin = '0 auto';
             sheetsContainer.style.background = '#ffffff';
             sheetsContainer.style.color = '#000000';
+
+            sheetsContainer.querySelectorAll('.form-sheet').forEach(sheet => {
+                sheet.style.width = '720px';
+                sheet.style.padding = '16px';
+                sheet.style.margin = '0';
+                sheet.style.boxSizing = 'border-box';
+            });
+
             document.body.appendChild(sheetsContainer);
 
             const opt = {
-                margin:       10, // mm margins
+                margin:       5, // mm margins
                 filename:     `${clientName.replace(/\s+/g, '_')}_Intake_Packet.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { 
-                    scale: 1, 
+                    scale: 1.5, 
                     allowTaint: true, 
                     logging: false, 
                     scrollY: 0,
@@ -959,18 +967,26 @@
             document.body.appendChild(overlay);
 
             const sheetsContainer = createCleanPDFContainer();
-            sheetsContainer.style.width = '800px';
+            sheetsContainer.style.width = '720px';
             sheetsContainer.style.margin = '0 auto';
             sheetsContainer.style.background = '#ffffff';
             sheetsContainer.style.color = '#000000';
+
+            sheetsContainer.querySelectorAll('.form-sheet').forEach(sheet => {
+                sheet.style.width = '720px';
+                sheet.style.padding = '16px';
+                sheet.style.margin = '0';
+                sheet.style.boxSizing = 'border-box';
+            });
+
             document.body.appendChild(sheetsContainer);
 
             const opt = {
-                margin:       10, // mm margins
+                margin:       5, // mm margins
                 filename:     `${clientName.replace(/\s+/g, '_')}_Intake_Packet.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { 
-                    scale: 1, 
+                    scale: 1.5, 
                     allowTaint: true, 
                     logging: false, 
                     scrollY: 0,
