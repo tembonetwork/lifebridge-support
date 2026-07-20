@@ -301,7 +301,7 @@
 
                     <div class="flex flex-col md:flex-row md:items-end gap-4">
                         <label class="font-semibold text-slate-700 text-sm min-w-[120px]">Date of Birth:</label>
-                        <input type="text" onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'" name="client_dob" required class="flex-grow underline-input text-slate-800 py-1 bg-transparent">
+                        <input type="date" name="client_dob" required class="flex-grow underline-input text-slate-800 py-1 bg-transparent">
                     </div>
 
                     <div class="flex flex-col md:flex-row md:items-end gap-4">
@@ -737,17 +737,29 @@
                 })
                 .catch(err => console.warn('Logo pre-cache warning:', err));
 
-            // Lock all date inputs strictly to today's date (Universal ISO Format)
+            // Lock all signature date inputs strictly to today's date (Universal ISO Format)
             const today = new Date().toISOString().split('T')[0];
             document.querySelectorAll('input[type="date"]').forEach(el => {
-                el.min = today;
-                el.max = today;
-                
-                // If it's a signature date, auto-fill it immediately so it's always today
-                if (el.name && el.name.includes('date')) {
+                if (el.name === 'client_dob') {
+                    el.max = today;
+                } else {
+                    el.min = today;
+                    el.max = today;
                     el.value = today;
                 }
             });
+
+            // Prevent future Date of Birth
+            const dobInput = document.querySelector('input[name="client_dob"]');
+            if (dobInput) {
+                dobInput.max = today;
+                dobInput.addEventListener('change', () => {
+                    if (dobInput.value && dobInput.value > today) {
+                        alert("Date of Birth cannot be in the future. Please select a valid past date.");
+                        dobInput.value = '';
+                    }
+                });
+            }
 
             signaturePads['client-signature'] = new DrawingPad('client-signature');
             signaturePads['staff-signature'] = new DrawingPad('staff-signature');
@@ -902,13 +914,11 @@
                     }
                 });
 
-                sheetsContainer.appendChild(clone);
-                
                 if (sheetIdx < sheets.length - 1) {
-                    const pageBreak = document.createElement('div');
-                    pageBreak.style.pageBreakAfter = 'always';
-                    sheetsContainer.appendChild(pageBreak);
+                    clone.style.pageBreakAfter = 'always';
+                    clone.style.breakAfter = 'page';
                 }
+                sheetsContainer.appendChild(clone);
             });
             return sheetsContainer;
         }
@@ -935,16 +945,24 @@
             document.body.style.width = '800px';
 
             const sheetsContainer = createCleanPDFContainer();
-            sheetsContainer.style.width = '720px';
+            sheetsContainer.style.width = '700px';
             sheetsContainer.style.margin = '0 auto';
             sheetsContainer.style.background = '#ffffff';
             sheetsContainer.style.color = '#000000';
 
-            sheetsContainer.querySelectorAll('.form-sheet').forEach(sheet => {
-                sheet.style.width = '720px';
-                sheet.style.padding = '20px 24px';
-                sheet.style.margin = '0';
+            const clonedSheets = sheetsContainer.querySelectorAll('.form-sheet');
+            clonedSheets.forEach((sheet, idx) => {
+                sheet.style.width = '700px';
+                sheet.style.padding = '14px 20px';
+                sheet.style.margin = '0 auto';
                 sheet.style.boxSizing = 'border-box';
+                if (idx < clonedSheets.length - 1) {
+                    sheet.style.pageBreakAfter = 'always';
+                    sheet.style.breakAfter = 'page';
+                } else {
+                    sheet.style.pageBreakAfter = 'auto';
+                    sheet.style.breakAfter = 'auto';
+                }
             });
 
             document.body.appendChild(sheetsContainer);
@@ -961,6 +979,7 @@
                     windowWidth: 800,
                     ignoreElements: (el) => el.id === 'pdf-loading-overlay'
                 },
+                pagebreak:    { mode: ['css', 'legacy'] },
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
@@ -994,16 +1013,24 @@
             document.body.style.width = '800px';
 
             const sheetsContainer = createCleanPDFContainer();
-            sheetsContainer.style.width = '720px';
+            sheetsContainer.style.width = '700px';
             sheetsContainer.style.margin = '0 auto';
             sheetsContainer.style.background = '#ffffff';
             sheetsContainer.style.color = '#000000';
 
-            sheetsContainer.querySelectorAll('.form-sheet').forEach(sheet => {
-                sheet.style.width = '720px';
-                sheet.style.padding = '20px 24px';
-                sheet.style.margin = '0';
+            const clonedSheets2 = sheetsContainer.querySelectorAll('.form-sheet');
+            clonedSheets2.forEach((sheet, idx) => {
+                sheet.style.width = '700px';
+                sheet.style.padding = '14px 20px';
+                sheet.style.margin = '0 auto';
                 sheet.style.boxSizing = 'border-box';
+                if (idx < clonedSheets2.length - 1) {
+                    sheet.style.pageBreakAfter = 'always';
+                    sheet.style.breakAfter = 'page';
+                } else {
+                    sheet.style.pageBreakAfter = 'auto';
+                    sheet.style.breakAfter = 'auto';
+                }
             });
 
             document.body.appendChild(sheetsContainer);
@@ -1020,6 +1047,7 @@
                     windowWidth: 800,
                     ignoreElements: (el) => el.id === 'pdf-loading-overlay'
                 },
+                pagebreak:    { mode: ['css', 'legacy'] },
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
