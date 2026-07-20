@@ -583,7 +583,12 @@
                             fakeInput.style.alignItems = 'flex-end';
                             fakeInput.style.padding = '0 4px';
                             
-                            fakeInput.innerText = input.value || '';
+                            let val = input.value || '';
+                            if ((!val || val.trim() === '') && (input.type === 'date' || (input.name && input.name.includes('date')))) {
+                                const now = new Date();
+                                val = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+                            }
+                            fakeInput.innerText = val;
                             
                             cloneInput.parentNode.replaceChild(fakeInput, cloneInput);
                         }
@@ -638,6 +643,9 @@
             overlay.innerHTML = '<div class="text-brand-600 font-bold text-xl flex flex-col items-center gap-4"><span class="animate-spin w-10 h-10 border-4 border-brand-200 border-t-brand-600 rounded-full"></span><span>Processing Document...</span></div>';
             document.body.appendChild(overlay);
 
+            const oldBodyWidth = document.body.style.width;
+            document.body.style.width = '800px';
+
             const sheetsContainer = createCleanPDFContainer();
             sheetsContainer.style.width = '720px';
             sheetsContainer.style.margin = '0 auto';
@@ -646,7 +654,7 @@
 
             sheetsContainer.querySelectorAll('.form-sheet').forEach(sheet => {
                 sheet.style.width = '720px';
-                sheet.style.padding = '16px';
+                sheet.style.padding = '20px 24px';
                 sheet.style.margin = '0';
                 sheet.style.boxSizing = 'border-box';
             });
@@ -662,7 +670,7 @@
                     allowTaint: true, 
                     logging: false, 
                     scrollY: 0,
-                    windowWidth: 1024,
+                    windowWidth: 800,
                     ignoreElements: (el) => el.id === 'pdf-loading-overlay'
                 },
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
@@ -671,6 +679,7 @@
             return html2pdf().set(opt).from(sheetsContainer).output('blob').then(blob => {
                 document.body.removeChild(sheetsContainer);
                 document.body.removeChild(overlay);
+                document.body.style.width = oldBodyWidth;
                 return blob;
             });
         }
@@ -693,6 +702,9 @@
             overlay.innerHTML = '<div class="text-brand-600 font-bold text-xl flex flex-col items-center gap-4"><span class="animate-spin w-10 h-10 border-4 border-brand-200 border-t-brand-600 rounded-full"></span><span>Generating PDF...</span></div>';
             document.body.appendChild(overlay);
 
+            const oldBodyWidth = document.body.style.width;
+            document.body.style.width = '800px';
+
             const sheetsContainer = createCleanPDFContainer();
             sheetsContainer.style.width = '720px';
             sheetsContainer.style.margin = '0 auto';
@@ -701,7 +713,7 @@
 
             sheetsContainer.querySelectorAll('.form-sheet').forEach(sheet => {
                 sheet.style.width = '720px';
-                sheet.style.padding = '16px';
+                sheet.style.padding = '20px 24px';
                 sheet.style.margin = '0';
                 sheet.style.boxSizing = 'border-box';
             });
@@ -717,7 +729,7 @@
                     allowTaint: true, 
                     logging: false, 
                     scrollY: 0,
-                    windowWidth: 1024,
+                    windowWidth: 800,
                     ignoreElements: (el) => el.id === 'pdf-loading-overlay'
                 },
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
@@ -726,6 +738,7 @@
             html2pdf().set(opt).from(sheetsContainer).save().then(() => {
                 document.body.removeChild(sheetsContainer);
                 document.body.removeChild(overlay);
+                document.body.style.width = oldBodyWidth;
             });
         }
 
