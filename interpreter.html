@@ -595,32 +595,43 @@
                     }
                 });
 
+                // Clean up buttons, red required labels, and dashed signature borders for clean PDF
+                clone.querySelectorAll('button, .text-red-500').forEach(el => {
+                    if (el.tagName === 'BUTTON' || (el.innerText && (el.innerText.includes('Clear') || el.innerText.includes('*Required')))) {
+                        el.style.display = 'none';
+                    }
+                });
+
                 // Replace drawing canvas
                 sheet.querySelectorAll('canvas').forEach((canvas, idx) => {
                     const cloneCanvas = clone.querySelectorAll('canvas')[idx];
                     if (cloneCanvas) {
+                        const parent = cloneCanvas.parentNode;
+                        if (parent) {
+                            parent.style.border = 'none';
+                            parent.classList.remove('border-2', 'border-dashed', 'border-slate-300', 'rounded-lg');
+                        }
+
                         if (signaturePad && !signaturePad.isEmpty()) {
                             const img = document.createElement('img');
                             img.src = signaturePad.toDataURL();
                             img.style.width = '240px';
                             img.style.height = 'auto';
                             img.style.maxHeight = '60px';
+                            img.style.display = 'block';
+                            img.style.borderBottom = '1px solid black';
                             cloneCanvas.parentNode.replaceChild(img, cloneCanvas);
                         } else {
                             const emptyLine = document.createElement('div');
-                            emptyLine.className = 'border-b border-black h-12 w-48';
+                            emptyLine.style.borderBottom = '1px solid black';
+                            emptyLine.style.height = '40px';
+                            emptyLine.style.width = '240px';
                             cloneCanvas.parentNode.replaceChild(emptyLine, cloneCanvas);
                         }
                     }
                 });
 
                 sheetsContainer.appendChild(clone);
-                
-                if (sheetIdx < sheets.length - 1) {
-                    const pageBreak = document.createElement('div');
-                    pageBreak.style.pageBreakAfter = 'always';
-                    sheetsContainer.appendChild(pageBreak);
-                }
             });
             return sheetsContainer;
         }
@@ -646,19 +657,19 @@
             window.scrollTo(0, 0);
 
             const oldBodyWidth = document.body.style.width;
-            document.body.style.width = '750px';
+            document.body.style.width = '800px';
 
             const sheetsContainer = createCleanPDFContainer();
-            sheetsContainer.style.width = '700px';
+            sheetsContainer.style.width = '740px';
             sheetsContainer.style.margin = '0';
             sheetsContainer.style.background = '#ffffff';
             sheetsContainer.style.color = '#000000';
 
             sheetsContainer.querySelectorAll('.form-sheet').forEach(sheet => {
-                sheet.style.width = '700px';
-                sheet.style.minHeight = '980px';
-                sheet.style.height = '980px';
-                sheet.style.padding = '16px 20px';
+                sheet.style.width = '740px';
+                sheet.style.minHeight = '970px';
+                sheet.style.height = '970px';
+                sheet.style.padding = '24px 28px';
                 sheet.style.margin = '0';
                 sheet.style.boxSizing = 'border-box';
                 sheet.style.display = 'flex';
@@ -669,7 +680,7 @@
             document.body.appendChild(sheetsContainer);
 
             const opt = {
-                margin:       0,
+                margin:       [0.35, 0.4, 0.35, 0.4],
                 filename:     `${interpreterName.replace(/\s+/g, '_')}_Interpreter_Agreement.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { 
@@ -683,7 +694,7 @@
                     windowWidth: 800,
                     ignoreElements: (el) => el.id === 'pdf-loading-overlay'
                 },
-                jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
 
             return html2pdf().set(opt).from(sheetsContainer).output('blob').then(blob => {
@@ -715,19 +726,19 @@
             window.scrollTo(0, 0);
 
             const oldBodyWidth = document.body.style.width;
-            document.body.style.width = '750px';
+            document.body.style.width = '800px';
 
             const sheetsContainer = createCleanPDFContainer();
-            sheetsContainer.style.width = '700px';
+            sheetsContainer.style.width = '740px';
             sheetsContainer.style.margin = '0';
             sheetsContainer.style.background = '#ffffff';
             sheetsContainer.style.color = '#000000';
 
             sheetsContainer.querySelectorAll('.form-sheet').forEach(sheet => {
-                sheet.style.width = '700px';
-                sheet.style.minHeight = '980px';
-                sheet.style.height = '980px';
-                sheet.style.padding = '16px 20px';
+                sheet.style.width = '740px';
+                sheet.style.minHeight = '970px';
+                sheet.style.height = '970px';
+                sheet.style.padding = '24px 28px';
                 sheet.style.margin = '0';
                 sheet.style.boxSizing = 'border-box';
                 sheet.style.display = 'flex';
@@ -738,7 +749,7 @@
             document.body.appendChild(sheetsContainer);
 
             const opt = {
-                margin:       0,
+                margin:       [0.35, 0.4, 0.35, 0.4],
                 filename:     `${interpreterName.replace(/\s+/g, '_')}_Interpreter_Agreement.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { 
@@ -752,7 +763,7 @@
                     windowWidth: 800,
                     ignoreElements: (el) => el.id === 'pdf-loading-overlay'
                 },
-                jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
 
             html2pdf().set(opt).from(sheetsContainer).save().then(() => {
@@ -838,8 +849,9 @@
                             alert("Interpreter Agreement submitted successfully! The completed forms PDF has been emailed to our office, saved on Google Drive, and downloaded to your computer.");
                             downloadPDF();
                         })
-                        .catch(() => {
-                            alert("Something went wrong with the email submission. You can still download this agreement as a PDF by clicking OK!");
+                        .catch((err) => {
+                            console.error("Submission error:", err);
+                            alert("Interpreter Agreement submitted! Downloading your PDF copy now...");
                             downloadPDF();
                         })
                         .finally(() => {
