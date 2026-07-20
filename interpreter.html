@@ -643,33 +643,43 @@
             overlay.innerHTML = '<div class="text-brand-600 font-bold text-xl flex flex-col items-center gap-4"><span class="animate-spin w-10 h-10 border-4 border-brand-200 border-t-brand-600 rounded-full"></span><span>Processing Document...</span></div>';
             document.body.appendChild(overlay);
 
+            window.scrollTo(0, 0);
+
             const oldBodyWidth = document.body.style.width;
-            document.body.style.width = '800px';
+            document.body.style.width = '750px';
 
             const sheetsContainer = createCleanPDFContainer();
-            sheetsContainer.style.width = '720px';
-            sheetsContainer.style.margin = '0 auto';
+            sheetsContainer.style.width = '700px';
+            sheetsContainer.style.margin = '0';
             sheetsContainer.style.background = '#ffffff';
             sheetsContainer.style.color = '#000000';
 
             sheetsContainer.querySelectorAll('.form-sheet').forEach(sheet => {
-                sheet.style.width = '720px';
-                sheet.style.padding = '20px 24px';
+                sheet.style.width = '700px';
+                sheet.style.minHeight = '980px';
+                sheet.style.height = '980px';
+                sheet.style.padding = '16px 20px';
                 sheet.style.margin = '0';
                 sheet.style.boxSizing = 'border-box';
+                sheet.style.display = 'flex';
+                sheet.style.flexDirection = 'column';
+                sheet.style.justifyContent = 'space-between';
             });
 
             document.body.appendChild(sheetsContainer);
 
             const opt = {
-                margin:       5,
+                margin:       0,
                 filename:     `${interpreterName.replace(/\s+/g, '_')}_Interpreter_Agreement.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { 
                     scale: 1.5, 
                     allowTaint: true, 
                     logging: false, 
+                    scrollX: 0,
                     scrollY: 0,
+                    x: 0,
+                    y: 0,
                     windowWidth: 800,
                     ignoreElements: (el) => el.id === 'pdf-loading-overlay'
                 },
@@ -702,33 +712,43 @@
             overlay.innerHTML = '<div class="text-brand-600 font-bold text-xl flex flex-col items-center gap-4"><span class="animate-spin w-10 h-10 border-4 border-brand-200 border-t-brand-600 rounded-full"></span><span>Generating PDF...</span></div>';
             document.body.appendChild(overlay);
 
+            window.scrollTo(0, 0);
+
             const oldBodyWidth = document.body.style.width;
-            document.body.style.width = '800px';
+            document.body.style.width = '750px';
 
             const sheetsContainer = createCleanPDFContainer();
-            sheetsContainer.style.width = '720px';
-            sheetsContainer.style.margin = '0 auto';
+            sheetsContainer.style.width = '700px';
+            sheetsContainer.style.margin = '0';
             sheetsContainer.style.background = '#ffffff';
             sheetsContainer.style.color = '#000000';
 
             sheetsContainer.querySelectorAll('.form-sheet').forEach(sheet => {
-                sheet.style.width = '720px';
-                sheet.style.padding = '20px 24px';
+                sheet.style.width = '700px';
+                sheet.style.minHeight = '980px';
+                sheet.style.height = '980px';
+                sheet.style.padding = '16px 20px';
                 sheet.style.margin = '0';
                 sheet.style.boxSizing = 'border-box';
+                sheet.style.display = 'flex';
+                sheet.style.flexDirection = 'column';
+                sheet.style.justifyContent = 'space-between';
             });
 
             document.body.appendChild(sheetsContainer);
 
             const opt = {
-                margin:       5,
+                margin:       0,
                 filename:     `${interpreterName.replace(/\s+/g, '_')}_Interpreter_Agreement.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { 
                     scale: 1.5, 
                     allowTaint: true, 
                     logging: false, 
+                    scrollX: 0,
                     scrollY: 0,
+                    x: 0,
+                    y: 0,
                     windowWidth: 800,
                     ignoreElements: (el) => el.id === 'pdf-loading-overlay'
                 },
