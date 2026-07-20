@@ -816,6 +816,20 @@
                 clone.style.margin = '0';
                 clone.style.padding = '20px';
 
+                // Force desktop flex/grid layouts on clone so mobile viewports (<640px) don't stack side-by-side fields vertically
+                clone.querySelectorAll('.flex-col').forEach(el => {
+                    if (el.querySelectorAll('input, div').length >= 2 && !el.classList.contains('form-sheet')) {
+                        el.style.display = 'flex';
+                        el.style.flexDirection = 'row';
+                        el.style.alignItems = 'flex-end';
+                        el.style.gap = '1rem';
+                    }
+                });
+                clone.querySelectorAll('.grid').forEach(el => {
+                    el.style.display = 'grid';
+                    el.style.gridTemplateColumns = 'repeat(2, minmax(0, 1fr))';
+                });
+
                 // Convert all images to inline base64 to avoid CORS/tainted canvas errors
                 const logoSrc = window.LOGO_BASE64 || logoBase64;
                 clone.querySelectorAll('img').forEach(img => {
@@ -936,6 +950,7 @@
                     allowTaint: true, 
                     logging: false, 
                     scrollY: 0,
+                    windowWidth: 1024,
                     ignoreElements: (el) => el.id === 'pdf-loading-overlay'
                 },
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
@@ -990,6 +1005,7 @@
                     allowTaint: true, 
                     logging: false, 
                     scrollY: 0,
+                    windowWidth: 1024,
                     ignoreElements: (el) => el.id === 'pdf-loading-overlay'
                 },
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
