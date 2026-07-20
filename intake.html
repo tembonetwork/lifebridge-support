@@ -1094,13 +1094,6 @@
             });
         }
 
-            html2pdf().set(opt).from(sheetsContainer).save().then(() => {
-                document.body.removeChild(sheetsContainer);
-                document.body.removeChild(overlay);
-                document.body.style.width = oldBodyWidth;
-            });
-        }
-
         // Form Submission Router (Caters for Free Web3Forms vs Direct Google Script Web App)
         const form = document.getElementById('intake-packet-form');
         const submitBtn = document.getElementById('submit-btn');
