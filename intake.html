@@ -18,6 +18,7 @@
     
     <!-- PDF Generation Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="logo_base64.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -723,8 +724,19 @@
 
         // Initialize drawing pads on DOM load
         const signaturePads = {};
+        let logoBase64 = '';
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Pre-cache logo as base64 to prevent CORS tainted canvas errors during PDF export
+            fetch('logo.png')
+                .then(res => res.blob())
+                .then(blob => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => { logoBase64 = reader.result; };
+                    reader.readAsDataURL(blob);
+                })
+                .catch(err => console.warn('Logo pre-cache warning:', err));
+
             // Lock all date inputs strictly to today's date (Universal ISO Format)
             const today = new Date().toISOString().split('T')[0];
             document.querySelectorAll('input[type="date"]').forEach(el => {
@@ -804,6 +816,14 @@
                 clone.style.margin = '0';
                 clone.style.padding = '20px';
 
+                // Convert all images to inline base64 to avoid CORS/tainted canvas errors
+                const logoSrc = window.LOGO_BASE64 || logoBase64;
+                clone.querySelectorAll('img').forEach(img => {
+                    if (logoSrc && img.src.includes('logo')) {
+                        img.src = logoSrc;
+                    }
+                });
+
                 // Prepare inputs for PDF (Bulletproof flattening for html2canvas/Safari)
                 const originalInputs = Array.from(sheet.querySelectorAll('input'));
                 const clonedInputs = Array.from(clone.querySelectorAll('input'));
@@ -879,39 +899,43 @@
             const first = document.querySelector('input[name="client_first_name"]').value || "";
             const last = document.querySelector('input[name="client_last_name"]').value || "";
             const clientName = `${first} ${last}`.trim() || "Intake_Packet";
-            const opt = {
-                margin:       10, // mm margins
-                filename:     `${clientName.replace(/\s+/g, '_')}_Intake_Packet.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 1, useCORS: true, logging: false },
-                jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
-            };
 
-            const sheetsContainer = createCleanPDFContainer();
-            
-            // To force Safari/iOS to render the canvas, the element MUST be statically in the DOM layout.
-            // We append it normally, but cover the entire screen with a fixed loading overlay so the user doesn't see it.
             const overlay = document.createElement('div');
+            overlay.id = 'pdf-loading-overlay';
             overlay.style.position = 'fixed';
-            overlay.style.top = '0';
-            overlay.style.left = '0';
-            overlay.style.width = '100vw';
-            overlay.style.height = '100vh';
-            overlay.style.backgroundColor = '#f8fafc';
+            overlay.style.inset = '0';
             overlay.style.zIndex = '999999';
+            overlay.style.backgroundColor = '#ffffff';
             overlay.style.display = 'flex';
             overlay.style.justifyContent = 'center';
             overlay.style.alignItems = 'center';
             overlay.innerHTML = '<div class="text-brand-600 font-bold text-xl flex flex-col items-center gap-4"><span class="animate-spin w-10 h-10 border-4 border-brand-200 border-t-brand-600 rounded-full"></span><span>Processing Document...</span></div>';
-            
             document.body.appendChild(overlay);
+
+            const sheetsContainer = createCleanPDFContainer();
+            sheetsContainer.style.width = '800px';
+            sheetsContainer.style.margin = '0 auto';
+            sheetsContainer.style.background = '#ffffff';
+            sheetsContainer.style.color = '#000000';
             document.body.appendChild(sheetsContainer);
-            window.scrollTo(0, document.body.scrollHeight); // Force browser to compute layout
-            
+
+            const opt = {
+                margin:       10, // mm margins
+                filename:     `${clientName.replace(/\s+/g, '_')}_Intake_Packet.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { 
+                    scale: 1, 
+                    allowTaint: true, 
+                    logging: false, 
+                    scrollY: 0,
+                    ignoreElements: (el) => el.id === 'pdf-loading-overlay'
+                },
+                jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
+            };
+
             return html2pdf().set(opt).from(sheetsContainer).output('blob').then(blob => {
                 document.body.removeChild(sheetsContainer);
                 document.body.removeChild(overlay);
-                window.scrollTo({ top: 0, behavior: 'instant' });
                 return blob;
             });
         }
@@ -921,37 +945,43 @@
             const first = document.querySelector('input[name="client_first_name"]').value || "";
             const last = document.querySelector('input[name="client_last_name"]').value || "";
             const clientName = `${first} ${last}`.trim() || "LifeBridge_Intake_Blank";
-            const opt = {
-                margin:       10, // mm margins
-                filename:     `${clientName.replace(/\s+/g, '_')}_Intake_Packet.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 1, useCORS: true, logging: false },
-                jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
-            };
 
-            const sheetsContainer = createCleanPDFContainer();
-            
             const overlay = document.createElement('div');
+            overlay.id = 'pdf-loading-overlay';
             overlay.style.position = 'fixed';
-            overlay.style.top = '0';
-            overlay.style.left = '0';
-            overlay.style.width = '100vw';
-            overlay.style.height = '100vh';
-            overlay.style.backgroundColor = '#f8fafc';
+            overlay.style.inset = '0';
             overlay.style.zIndex = '999999';
+            overlay.style.backgroundColor = '#ffffff';
             overlay.style.display = 'flex';
             overlay.style.justifyContent = 'center';
             overlay.style.alignItems = 'center';
             overlay.innerHTML = '<div class="text-brand-600 font-bold text-xl flex flex-col items-center gap-4"><span class="animate-spin w-10 h-10 border-4 border-brand-200 border-t-brand-600 rounded-full"></span><span>Generating PDF...</span></div>';
-            
             document.body.appendChild(overlay);
+
+            const sheetsContainer = createCleanPDFContainer();
+            sheetsContainer.style.width = '800px';
+            sheetsContainer.style.margin = '0 auto';
+            sheetsContainer.style.background = '#ffffff';
+            sheetsContainer.style.color = '#000000';
             document.body.appendChild(sheetsContainer);
-            window.scrollTo(0, document.body.scrollHeight);
-            
+
+            const opt = {
+                margin:       10, // mm margins
+                filename:     `${clientName.replace(/\s+/g, '_')}_Intake_Packet.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { 
+                    scale: 1, 
+                    allowTaint: true, 
+                    logging: false, 
+                    scrollY: 0,
+                    ignoreElements: (el) => el.id === 'pdf-loading-overlay'
+                },
+                jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
+            };
+
             html2pdf().set(opt).from(sheetsContainer).save().then(() => {
                 document.body.removeChild(sheetsContainer);
                 document.body.removeChild(overlay);
-                window.scrollTo({ top: 0, behavior: 'instant' });
             });
         }
 
@@ -1040,14 +1070,19 @@
 
                         fetch(GOOGLE_SCRIPT_URL, {
                             method: 'POST',
-                            mode: 'no-cors',
+                            // REMOVED: mode: 'no-cors'
+                            headers: {
+                                'Content-Type': 'text/plain;charset=utf-8' 
+                            },
                             body: JSON.stringify(payload)
                         })
-                        .then(() => {
+                        .then(response => {
+                            // Because we removed no-cors, we can now check if the response is actually okay
                             alert("Intake Packet submitted successfully! The completed forms PDF has been emailed to our office, saved on Google Drive, and downloaded to your computer.");
                             downloadPDF();
                         })
-                        .catch(() => {
+                        .catch((err) => {
+                            console.error("Submission error:", err);
                             alert("Something went wrong with the email submission. You can still download this packet as a PDF by clicking OK!");
                             downloadPDF();
                         })

@@ -18,6 +18,7 @@
     
     <!-- PDF Generation Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="logo_base64.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -467,20 +468,14 @@
             }
 
             // Pre-cache logo as base64 to prevent CORS tainted canvas errors during PDF export
-            const logoImg = document.querySelector('.form-sheet img[src*="logo"]');
-            if (logoImg) {
-                const tryCache = () => {
-                    try {
-                        const c = document.createElement('canvas');
-                        c.width = logoImg.naturalWidth || 200;
-                        c.height = logoImg.naturalHeight || 200;
-                        c.getContext('2d').drawImage(logoImg, 0, 0, c.width, c.height);
-                        logoBase64 = c.toDataURL('image/png');
-                    } catch(e) { /* will retry or skip */ }
-                };
-                if (logoImg.complete) tryCache();
-                else logoImg.onload = tryCache;
-            }
+            fetch('logo.png')
+                .then(res => res.blob())
+                .then(blob => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => { logoBase64 = reader.result; };
+                    reader.readAsDataURL(blob);
+                })
+                .catch(err => console.warn('Logo pre-cache warning:', err));
 
             // Initialize signature pads
             signaturePad = new DrawingPad('interpreter-signature');
@@ -535,9 +530,10 @@
                 clone.style.padding = '20px';
 
                 // Convert all images to inline base64 to avoid CORS/tainted canvas errors
+                const logoSrc = window.LOGO_BASE64 || logoBase64;
                 clone.querySelectorAll('img').forEach(img => {
-                    if (logoBase64 && img.src.includes('logo')) {
-                        img.src = logoBase64;
+                    if (logoSrc && img.src.includes('logo')) {
+                        img.src = logoSrc;
                     }
                 });
 
@@ -615,22 +611,43 @@
             const first = document.querySelector('input[name="interpreter_first_name"]').value || "";
             const last = document.querySelector('input[name="interpreter_last_name"]').value || "";
             const interpreterName = `${first} ${last}`.trim() || "Interpreter";
+
+            const overlay = document.createElement('div');
+            overlay.id = 'pdf-loading-overlay';
+            overlay.style.position = 'fixed';
+            overlay.style.inset = '0';
+            overlay.style.zIndex = '999999';
+            overlay.style.backgroundColor = '#ffffff';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.innerHTML = '<div class="text-brand-600 font-bold text-xl flex flex-col items-center gap-4"><span class="animate-spin w-10 h-10 border-4 border-brand-200 border-t-brand-600 rounded-full"></span><span>Processing Document...</span></div>';
+            document.body.appendChild(overlay);
+
+            const sheetsContainer = createCleanPDFContainer();
+            sheetsContainer.style.width = '800px';
+            sheetsContainer.style.margin = '0 auto';
+            sheetsContainer.style.background = '#ffffff';
+            sheetsContainer.style.color = '#000000';
+            document.body.appendChild(sheetsContainer);
+
             const opt = {
                 margin:       10,
                 filename:     `${interpreterName.replace(/\s+/g, '_')}_Interpreter_Agreement.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 1, allowTaint: true, logging: false, scrollY: 0, windowWidth: 900 },
+                html2canvas:  { 
+                    scale: 1, 
+                    allowTaint: true, 
+                    logging: false, 
+                    scrollY: 0,
+                    ignoreElements: (el) => el.id === 'pdf-loading-overlay'
+                },
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
-            const sheetsContainer = createCleanPDFContainer();
-            sheetsContainer.style.width = '900px';
-            sheetsContainer.style.position = 'fixed';
-            sheetsContainer.style.left = '-9999px';
-            document.body.appendChild(sheetsContainer);
-            
             return html2pdf().set(opt).from(sheetsContainer).output('blob').then(blob => {
                 document.body.removeChild(sheetsContainer);
+                document.body.removeChild(overlay);
                 return blob;
             });
         }
@@ -640,22 +657,43 @@
             const first = document.querySelector('input[name="interpreter_first_name"]').value || "";
             const last = document.querySelector('input[name="interpreter_last_name"]').value || "";
             const interpreterName = `${first} ${last}`.trim() || "LifeBridge_Interpreter_Blank";
+
+            const overlay = document.createElement('div');
+            overlay.id = 'pdf-loading-overlay';
+            overlay.style.position = 'fixed';
+            overlay.style.inset = '0';
+            overlay.style.zIndex = '999999';
+            overlay.style.backgroundColor = '#ffffff';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.innerHTML = '<div class="text-brand-600 font-bold text-xl flex flex-col items-center gap-4"><span class="animate-spin w-10 h-10 border-4 border-brand-200 border-t-brand-600 rounded-full"></span><span>Generating PDF...</span></div>';
+            document.body.appendChild(overlay);
+
+            const sheetsContainer = createCleanPDFContainer();
+            sheetsContainer.style.width = '800px';
+            sheetsContainer.style.margin = '0 auto';
+            sheetsContainer.style.background = '#ffffff';
+            sheetsContainer.style.color = '#000000';
+            document.body.appendChild(sheetsContainer);
+
             const opt = {
                 margin:       10,
                 filename:     `${interpreterName.replace(/\s+/g, '_')}_Interpreter_Agreement.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 1, allowTaint: true, logging: false, scrollY: 0, windowWidth: 900 },
+                html2canvas:  { 
+                    scale: 1, 
+                    allowTaint: true, 
+                    logging: false, 
+                    scrollY: 0,
+                    ignoreElements: (el) => el.id === 'pdf-loading-overlay'
+                },
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
-            const sheetsContainer = createCleanPDFContainer();
-            sheetsContainer.style.width = '900px';
-            sheetsContainer.style.position = 'fixed';
-            sheetsContainer.style.left = '-9999px';
-            document.body.appendChild(sheetsContainer);
-            
             html2pdf().set(opt).from(sheetsContainer).save().then(() => {
                 document.body.removeChild(sheetsContainer);
+                document.body.removeChild(overlay);
             });
         }
 
